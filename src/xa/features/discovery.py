@@ -11,35 +11,6 @@ from ..core.registry import COMMANDS, Command, register
 from ._common import attach_yes_flag, get_client
 
 
-def _global_flags_from_parser() -> list[dict]:
-    """Introspecte le parser top-level pour exposer les --flag globaux.
-
-    Source unique de vérité : la même que celle utilisée à l'exécution.
-    Évite de désynchroniser un schéma main-maintenu avec le parser réel.
-    """
-    # Import paresseux pour éviter le cycle cli ↔ discovery
-    from ..cli import build_parser
-
-    parser = build_parser()
-    out = []
-    for action in parser._actions:  # noqa: SLF001 — argparse stable
-        if action.dest in ("help", "cmd"):
-            continue
-        if not action.option_strings:
-            continue
-        info = {
-            "name": action.dest,
-            "kind": "option",
-            "flags": list(action.option_strings),
-            "required": bool(action.required),
-            "help": action.help,
-        }
-        if action.default is not None and action.default is not argparse.SUPPRESS:
-            info["default"] = action.default
-        out.append(info)
-    return out
-
-
 def _args_ops(sp):
     sp.add_argument("--filter", help="filtre les ops dont le nom contient X")
 
@@ -104,6 +75,48 @@ def cmd_help(args) -> dict:
     })
 
 
+# ─────────── introspection helpers (single source of truth) ───────────
+
+def _action_to_dict(action: argparse.Action, *, extended: bool = False) -> dict:
+    """Sérialise une argparse.Action en dict JSON.
+
+    extended=True ajoute choices, type, nargs (pour la vue par-commande).
+    """
+    info = {
+        "name": action.dest,
+        "kind": "positional" if not action.option_strings else "option",
+        "flags": list(action.option_strings),
+        "required": bool(action.required),
+        "help": action.help,
+    }
+    if action.default is not None and action.default is not argparse.SUPPRESS:
+        info["default"] = action.default
+    if extended:
+        if action.choices:
+            info["choices"] = list(action.choices)
+        if action.type:
+            info["type"] = getattr(action.type, "__name__", str(action.type))
+        if action.nargs is not None:
+            info["nargs"] = action.nargs
+    return info
+
+
+def _global_flags_from_parser() -> list[dict]:
+    """Introspecte le parser top-level pour exposer les --flag globaux.
+
+    Source unique de vérité : la même que celle utilisée à l'exécution.
+    """
+    # Import paresseux pour éviter le cycle cli ↔ discovery
+    from ..cli import build_parser
+
+    parser = build_parser()
+    return [
+        _action_to_dict(a)
+        for a in parser._actions  # noqa: SLF001 — argparse stable
+        if a.dest not in ("help", "cmd") and a.option_strings
+    ]
+
+
 def _describe_command(cmd: Command) -> dict:
     """Construit un schéma JSON détaillé d'une commande via introspection."""
     sp = argparse.ArgumentParser(prog=f"xa {cmd.name}", add_help=False)
@@ -111,26 +124,11 @@ def _describe_command(cmd: Command) -> dict:
     if cmd.is_write:
         attach_yes_flag(sp)
 
-    args_schema = []
-    for action in sp._actions:  # noqa: SLF001 — API argparse stable
-        if action.dest == "help":
-            continue
-        info = {
-            "name": action.dest,
-            "kind": "positional" if not action.option_strings else "option",
-            "flags": list(action.option_strings),
-            "required": bool(action.required),
-            "help": action.help,
-        }
-        if action.choices:
-            info["choices"] = list(action.choices)
-        if action.default is not None and action.default is not argparse.SUPPRESS:
-            info["default"] = action.default
-        if action.type:
-            info["type"] = getattr(action.type, "__name__", str(action.type))
-        if action.nargs is not None:
-            info["nargs"] = action.nargs
-        args_schema.append(info)
+    args_schema = [
+        _action_to_dict(a, extended=True)
+        for a in sp._actions  # noqa: SLF001
+        if a.dest != "help"
+    ]
 
     schema = {
         "shape": "command",

@@ -8,6 +8,18 @@ Ce module les transforme en dicts plats utilisables par la CLI.
 from __future__ import annotations
 
 
+def coalesce_user_field(user_node: dict, field: str):
+    """Récupère un champ d'un noeud user GraphQL avec fallback core → legacy.
+
+    X expose certains champs (screen_name, name, created_at) à la fois sous
+    `user.core` (nouveau) et `user.legacy` (ancien). Cette fonction encode
+    la règle de précédence : `core` d'abord, `legacy` en repli.
+    """
+    core = user_node.get("core") or {}
+    legacy = user_node.get("legacy") or {}
+    return core.get(field) or legacy.get(field)
+
+
 def parse_tweet_entries(payload: dict) -> tuple[list[dict], str | None]:
     """Parse une réponse type SearchTimeline / UserTweets / HomeTimeline.
 
@@ -119,12 +131,11 @@ def parse_user_entries(payload: dict) -> tuple[list[dict], str | None]:
                 item = content.get("itemContent", {})
                 u = (item.get("user_results") or {}).get("result") or {}
                 legacy = u.get("legacy") or {}
-                core = u.get("core") or {}
-                screen_name = core.get("screen_name") or legacy.get("screen_name")
+                screen_name = coalesce_user_field(u, "screen_name")
                 users.append({
                     "rest_id": u.get("rest_id"),
                     "screen_name": screen_name,
-                    "name": core.get("name") or legacy.get("name"),
+                    "name": coalesce_user_field(u, "name"),
                     "description": legacy.get("description") or "",
                     "followers_count": legacy.get("followers_count"),
                     "friends_count": legacy.get("friends_count"),
@@ -144,15 +155,13 @@ def summarize_tweet(tw: dict) -> dict:
     user_results = (
         ((tw.get("core") or {}).get("user_results") or {}).get("result", {})
     )
-    user_legacy = user_results.get("legacy") or {}
-    user_core = user_results.get("core") or {}
-    screen_name = user_core.get("screen_name") or user_legacy.get("screen_name")
+    screen_name = coalesce_user_field(user_results, "screen_name")
     tweet_id = tw.get("rest_id")
     return {
         "id": tweet_id,
         "created_at": legacy.get("created_at"),
         "author": screen_name,
-        "author_name": user_core.get("name") or user_legacy.get("name"),
+        "author_name": coalesce_user_field(user_results, "name"),
         "text": legacy.get("full_text"),
         "lang": legacy.get("lang"),
         "favorite_count": legacy.get("favorite_count"),

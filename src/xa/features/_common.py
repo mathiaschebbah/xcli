@@ -115,16 +115,15 @@ def run_user_paginated(
     )
 
 
-def run_friendship(
-    client: XClient,
-    screen_name: str,
-    action: Literal["create", "destroy"],
-) -> dict:
+def run_friendship(args, action: Literal["create", "destroy"]) -> dict:
     """Endpoint REST `/1.1/friendships/{create,destroy}.json` (follow/unfollow).
 
     GraphQL n'a pas de mutation Follow, on passe par l'API REST historique.
+    Convention : prend `args` comme les autres `run_*` (pas de client en
+    paramètre — le client est créé via get_client()).
     """
-    u = resolve_user(client, screen_name)
+    client = get_client()
+    u = resolve_user(client, args.screen_name)
     r = client._raw(
         "POST",
         f"https://x.com/i/api/1.1/friendships/{action}.json",
@@ -134,13 +133,11 @@ def run_friendship(
     past = "followed" if action == "create" else "unfollowed"
     verb = "follow" if action == "create" else "unfollow"
     if r.status_code != 200:
-        # Code d'erreur orienté commande utilisateur (follow_failed) plutôt
-        # que verbe REST interne (create_failed).
         raise XaError(
             f"{verb}_failed",
             f"HTTP {r.status_code}: {r.text[:200]}",
         )
-    return ok({past: screen_name, "user_id": u["rest_id"]})
+    return ok({past: args.screen_name, "user_id": u["rest_id"]})
 
 
 def run_tweet_action(

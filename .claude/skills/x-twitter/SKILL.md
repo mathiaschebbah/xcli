@@ -85,6 +85,9 @@ xa likes SCREEN_NAME --limit 50
 xa following SCREEN_NAME --limit 200
 xa followers SCREEN_NAME --limit 200
 xa trends
+xa cookies <domain>              # debug auth (cookies for any domain)
+xa ops --filter <term>           # search the 158-op catalog
+xa help [<cmd>]                  # machine-readable schema
 ```
 
 All paginated commands take `--limit N` (default 50) and `--cursor C` to
@@ -185,6 +188,10 @@ the account will be flagged or suspended.
 | `reveal_required` | `xa cookies <domain> --format header/netscape` without `--reveal` | add `--reveal` if you actually want to export cookies in clear |
 | `invalid_json` | malformed `--vars` JSON in `xa raw` | quote properly: `--vars '{"k":"v"}'` |
 | `too_many_retries` | feature flag discovery loop exhausted | likely API change — try `xa harvest-ops` |
+| `no_session` | `twid` cookie missing — `whoami` cannot identify you | `xa auth-init` |
+| `no_browser_profile` | no Chromium profile found on this machine | install Chrome/Brave and log in to x.com |
+| `ops_catalog_missing` | `x_ops.json` not bundled (bad install) | run `xa harvest-ops` or reinstall via `./install.sh` |
+| `invalid_response` | X returned HTTP 200 but non-JSON body | likely API change — try `xa harvest-ops` |
 
 ### When ops fail repeatedly (X updated its client)
 ```bash

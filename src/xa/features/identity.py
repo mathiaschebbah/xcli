@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from ..core.errors import XaError
 from ..core.output import ok, select_fields
+from ..core.parsers import coalesce_user_field
 from ..core.registry import register
 from ._common import get_client, resolve_user
 
@@ -27,11 +28,10 @@ def cmd_whoami(args) -> dict:
     })
     u = (data.get("data", {}).get("user", {}) or {}).get("result", {}) or {}
     legacy = u.get("legacy", {})
-    core = u.get("core", {})
     return ok({
         "user_id": u.get("rest_id"),
-        "screen_name": core.get("screen_name") or legacy.get("screen_name"),
-        "name": core.get("name") or legacy.get("name"),
+        "screen_name": coalesce_user_field(u, "screen_name"),
+        "name": coalesce_user_field(u, "name"),
         "followers_count": legacy.get("followers_count"),
         "friends_count": legacy.get("friends_count"),
         "statuses_count": legacy.get("statuses_count"),
@@ -44,11 +44,10 @@ def cmd_user(args) -> dict:
     client = get_client()
     u = resolve_user(client, args.screen_name)
     legacy = u.get("legacy", {})
-    core = u.get("core", {})
     data = {
         "rest_id": u.get("rest_id"),
-        "screen_name": core.get("screen_name") or legacy.get("screen_name"),
-        "name": core.get("name") or legacy.get("name"),
+        "screen_name": coalesce_user_field(u, "screen_name"),
+        "name": coalesce_user_field(u, "name"),
         "is_blue_verified": u.get("is_blue_verified"),
         "description": legacy.get("description"),
         "followers_count": legacy.get("followers_count"),
@@ -58,7 +57,7 @@ def cmd_user(args) -> dict:
         "favourites_count": legacy.get("favourites_count"),
         "location": legacy.get("location"),
         "url": legacy.get("url"),
-        "created_at": legacy.get("created_at") or core.get("created_at"),
+        "created_at": coalesce_user_field(u, "created_at") or legacy.get("created_at"),
         "profile_image_url": (u.get("avatar") or {}).get("image_url"),
         "profile_banner_url": legacy.get("profile_banner_url"),
         "pinned_tweet_ids": legacy.get("pinned_tweet_ids_str", []),

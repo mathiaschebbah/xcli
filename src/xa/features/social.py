@@ -7,7 +7,6 @@ from ..core.registry import register
 from ._common import (
     args_paginated_user,
     args_screen,
-    get_client,
     run_friendship,
     run_user_paginated,
 )
@@ -39,10 +38,10 @@ def cmd_followers(args) -> dict:
 @register("follow", configure=args_screen, is_write=True)
 def cmd_follow(args) -> dict:
     """Suivre un compte (action visible publiquement, requiert --yes)."""
-    return run_friendship(get_client(), args.screen_name, "create")
+    return run_friendship(args, "create")
 
 
 @register("unfollow", configure=args_screen, is_write=True)
 def cmd_unfollow(args) -> dict:
     """Ne plus suivre un compte (requiert --yes)."""
-    return run_friendship(get_client(), args.screen_name, "destroy")
+    return run_friendship(args, "destroy")
