@@ -4,7 +4,12 @@ from __future__ import annotations
 
 from ..core.output import ok, select_fields
 from ..core.pagination import paginate_capped
-from ..core.parsers import parse_tweet_entries, parse_user_entries, summarize_tweet
+from ..core.parsers import (
+    parse_thread_entries,
+    parse_tweet_entries,
+    parse_user_entries,
+    summarize_tweet,
+)
 from ..core.registry import register
 from ..core.settings import DEFAULT_LIMIT
 from ._common import (
@@ -130,34 +135,8 @@ def cmd_thread(args) -> dict:
         "withBirdwatchNotes": False,
         "withVoice": False,
     })
-    # TweetDetail : data.threaded_conversation_with_injections_v2 (structure
-    # différente des autres timelines, on l'inline ici plutôt que d'élargir
-    # le parser générique).
-    instructions = (
-        data.get("data", {})
-        .get("threaded_conversation_with_injections_v2", {})
-        .get("instructions", [])
-    )
-    out: list[dict] = []
-    seen: set[str] = set()
-    for inst in instructions:
-        if inst.get("type") != "TimelineAddEntries":
-            continue
-        for entry in inst.get("entries", []):
-            content = entry.get("content", {}) or {}
-            items = content.get("items", []) or []
-            if not items and (content.get("itemContent") or {}).get("tweet_results"):
-                items = [{"item": {"itemContent": content["itemContent"]}}]
-            for it in items:
-                ic = ((it or {}).get("item") or {}).get("itemContent") or {}
-                tw = (ic.get("tweet_results") or {}).get("result") or {}
-                if not tw:
-                    continue
-                summary = summarize_tweet(tw)
-                if summary["id"] and summary["id"] not in seen:
-                    seen.add(summary["id"])
-                    out.append(summary)
+    tweets = parse_thread_entries(data)
     return ok(
-        select_fields(out, args.fields),
-        count=len(out), focal_tweet_id=args.tweet_id,
+        select_fields(tweets, args.fields),
+        count=len(tweets), focal_tweet_id=args.tweet_id,
     )

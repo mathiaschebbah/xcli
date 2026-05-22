@@ -29,8 +29,10 @@ command -v uv >/dev/null || curl -LsSf https://astral.sh/uv/install.sh | sh
 
 ```bash
 # Replace <REPO_URL> with the repo URL the user gave you.
-git clone <REPO_URL> ~/Desktop/Projets/xcli
-cd ~/Desktop/Projets/xcli
+# Clone wherever you want — install.sh records the absolute path of the
+# repo in the wrapper and uses it on every invocation.
+git clone <REPO_URL> xcli
+cd xcli
 ./install.sh
 ```
 

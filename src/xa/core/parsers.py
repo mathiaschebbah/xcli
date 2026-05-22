@@ -106,6 +106,49 @@ def parse_tweet_entries(payload: dict) -> tuple[list[dict], str | None]:
     return out, cursor
 
 
+def parse_thread_entries(payload: dict) -> list[dict]:
+    """Parse une réponse TweetDetail (fil de conversation).
+
+    La structure est `data.threaded_conversation_with_injections_v2.instructions`,
+    différente des timelines normales : les entries contiennent souvent un
+    array `items` (réponses imbriquées) au lieu d'un `itemContent` direct.
+
+    Retourne la liste dédupliquée des tweets du fil (sans cursor, le fil
+    n'est pas paginé comme une timeline).
+    """
+    out: list[dict] = []
+    seen: set[str] = set()
+
+    def _add_tweet(item_content: dict) -> None:
+        tw = (item_content.get("tweet_results") or {}).get("result") or {}
+        summary = summarize_tweet(tw)
+        if not summary["id"]:
+            return
+        if summary["id"] in seen:
+            return
+        seen.add(summary["id"])
+        out.append(summary)
+
+    instructions = (
+        payload.get("data", {})
+        .get("threaded_conversation_with_injections_v2", {})
+        .get("instructions", [])
+    )
+    for inst in instructions:
+        if inst.get("type") != "TimelineAddEntries":
+            continue
+        for entry in inst.get("entries", []):
+            content = entry.get("content", {}) or {}
+            items = content.get("items", []) or []
+            if not items and (content.get("itemContent") or {}).get("tweet_results"):
+                items = [{"item": {"itemContent": content["itemContent"]}}]
+            for it in items:
+                ic = ((it or {}).get("item") or {}).get("itemContent") or {}
+                if ic:
+                    _add_tweet(ic)
+    return out
+
+
 def parse_user_entries(payload: dict) -> tuple[list[dict], str | None]:
     """Parse une réponse type Following / Followers.
 

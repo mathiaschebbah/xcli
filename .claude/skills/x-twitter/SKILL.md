@@ -192,6 +192,8 @@ the account will be flagged or suspended.
 | `no_browser_profile` | no Chromium profile found on this machine | install Chrome/Brave and log in to x.com |
 | `ops_catalog_missing` | `x_ops.json` not bundled (bad install) | run `xa harvest-ops` or reinstall via `./install.sh` |
 | `invalid_response` | X returned HTTP 200 but non-JSON body | likely API change — try `xa harvest-ops` |
+| `interrupted` | user sent Ctrl-C / SIGINT during execution | no fix needed — just re-run |
+| `internal_error` | unexpected Python exception in xa itself | report a bug; the `message` field has the exception type and detail |
 
 ### When ops fail repeatedly (X updated its client)
 ```bash
