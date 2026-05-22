@@ -57,7 +57,7 @@ def cmd_user(args) -> dict:
         "favourites_count": legacy.get("favourites_count"),
         "location": legacy.get("location"),
         "url": legacy.get("url"),
-        "created_at": coalesce_user_field(u, "created_at") or legacy.get("created_at"),
+        "created_at": coalesce_user_field(u, "created_at"),
         "profile_image_url": (u.get("avatar") or {}).get("image_url"),
         "profile_banner_url": legacy.get("profile_banner_url"),
         "pinned_tweet_ids": legacy.get("pinned_tweet_ids_str", []),

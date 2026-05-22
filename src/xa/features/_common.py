@@ -133,6 +133,8 @@ def run_friendship(args, action: Literal["create", "destroy"]) -> dict:
     past = "followed" if action == "create" else "unfollowed"
     verb = "follow" if action == "create" else "unfollow"
     if r.status_code != 200:
+        # NOTE: codes d'erreur émis ici (statiquement non-greppables, mais
+        # documentés dans SKILL.md): "follow_failed" | "unfollow_failed".
         raise XaError(
             f"{verb}_failed",
             f"HTTP {r.status_code}: {r.text[:200]}",

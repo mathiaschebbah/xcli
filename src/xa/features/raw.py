@@ -47,6 +47,13 @@ def cmd_raw(args) -> dict:
             f"raw mutation '{args.op}' modifie ton compte X et requiert --yes",
             hint="ajoute --yes pour confirmer explicitement",
         )
-    variables = json.loads(args.vars) if args.vars else {}
+    try:
+        variables = json.loads(args.vars) if args.vars else {}
+    except json.JSONDecodeError as e:
+        raise XaError(
+            "invalid_json",
+            f"--vars n'est pas du JSON valide: {e}",
+            hint='quote correctement: --vars \'{"k":"v"}\'',
+        )
     data = client.call(args.op, variables, method=args.method)
     return ok(data)

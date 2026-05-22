@@ -64,7 +64,8 @@ to open Chrome, log in to https://x.com, then re-run `xa auth-init`.
 ### Uninstall
 
 ```bash
-~/Desktop/Projets/xcli/install.sh --uninstall
+# depuis la racine du repo cloné :
+./install.sh --uninstall
 ```
 
 ---
