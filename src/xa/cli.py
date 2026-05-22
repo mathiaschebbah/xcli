@@ -1,4 +1,10 @@
-"""Entry point CLI : construit le parser argparse à partir du registry."""
+"""Entry point CLI : construit le parser argparse à partir du registry.
+
+Conventions :
+- Tous les sous-parsers ont accès à `--human` (déplacé en début d'argv).
+- Les commandes `is_write=True` reçoivent automatiquement `--yes` ; le
+  dispatcher vérifie sa présence avant d'appeler la fonction métier.
+"""
 
 from __future__ import annotations
 
@@ -9,7 +15,20 @@ import sys
 from . import features  # noqa: F401 — déclenche tous les @register
 from .core.errors import XaError
 from .core.output import emit, err
-from .core.registry import COMMANDS
+from .core.registry import COMMANDS, Command
+
+
+def _build_subparser(sub, cmd: Command) -> argparse.ArgumentParser:
+    sp = sub.add_parser(cmd.name, help=cmd.description)
+    cmd.configure(sp)
+    if cmd.is_write:
+        sp.add_argument(
+            "--yes",
+            action="store_true",
+            help="confirme explicitement cette action visible publiquement",
+        )
+    sp.set_defaults(_cmd=cmd)
+    return sp
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -24,10 +43,20 @@ def build_parser() -> argparse.ArgumentParser:
     )
     sub = p.add_subparsers(dest="cmd", required=True)
     for cmd in sorted(COMMANDS, key=lambda c: c.name):
-        sp = sub.add_parser(cmd.name, help=cmd.description)
-        cmd.configure(sp)
-        sp.set_defaults(func=cmd.fn, _is_write=cmd.is_write)
+        _build_subparser(sub, cmd)
     return p
+
+
+def _dispatch(args) -> dict:
+    """Vérifie le verrou --yes pour les writes, puis appelle la commande."""
+    cmd: Command = args._cmd
+    if cmd.is_write and not getattr(args, "yes", False):
+        raise XaError(
+            "confirmation_required",
+            f"l'action '{cmd.name}' modifie ton compte X et requiert --yes",
+            hint="ajoute --yes pour confirmer explicitement",
+        )
+    return cmd.fn(args)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -40,7 +69,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
     try:
-        payload = args.func(args)
+        payload = _dispatch(args)
     except XaError as e:
         payload = err(e.code, e.message, hint=e.hint, **e.extras)
     except json.JSONDecodeError as e:

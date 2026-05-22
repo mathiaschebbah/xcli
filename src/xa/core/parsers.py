@@ -34,8 +34,26 @@ def parse_tweet_entries(payload: dict) -> tuple[list[dict], str | None]:
         )
 
     instructions = timeline.get("instructions", []) if timeline else []
+    seen_ids: set[str] = set()
+
+    def _add_tweet(item_content: dict) -> None:
+        tw = (item_content.get("tweet_results") or {}).get("result") or {}
+        summary = summarize_tweet(tw)
+        if summary["id"] and summary["id"] not in seen_ids:
+            seen_ids.add(summary["id"])
+            out.append(summary)
+
     for inst in instructions:
-        if inst.get("type") != "TimelineAddEntries":
+        itype = inst.get("type")
+        # TimelinePinEntry : un seul tweet pinned au top du profil
+        if itype == "TimelinePinEntry":
+            entry = inst.get("entry") or {}
+            content = entry.get("content", {})
+            ic = content.get("itemContent") or {}
+            if ic:
+                _add_tweet(ic)
+            continue
+        if itype != "TimelineAddEntries":
             continue
         for entry in inst.get("entries", []):
             eid = entry.get("entryId", "")
@@ -45,11 +63,13 @@ def parse_tweet_entries(payload: dict) -> tuple[list[dict], str | None]:
                 or eid.startswith("sq-I-t-")
                 or eid.startswith("promoted-tweet-")
             ):
-                item = content.get("itemContent", {})
-                tw = (item.get("tweet_results") or {}).get("result") or {}
-                summary = summarize_tweet(tw)
-                if summary["id"]:
-                    out.append(summary)
+                _add_tweet(content.get("itemContent", {}))
+            elif eid.startswith("profile-conversation-") or eid.startswith("conversationthread-"):
+                # TimelineAddToModule (threadé) : entry.content.items[*].item.itemContent
+                for it in (content.get("items") or []):
+                    ic = ((it or {}).get("item") or {}).get("itemContent") or {}
+                    if ic:
+                        _add_tweet(ic)
             elif eid.startswith("cursor-bottom-"):
                 cursor = (
                     content.get("value")

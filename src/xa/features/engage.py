@@ -1,43 +1,53 @@
 """Engagement : `xa post`, `xa reply`, `xa delete-tweet`, `xa like`/unlike,
 `xa retweet`/unretweet, `xa bookmark`/unbookmark.
 
-Toutes ces commandes modifient ton compte → verrouillées par `--yes`."""
+Toutes ces commandes modifient ton compte → verrouillées par `--yes`
+(géré au niveau dispatcher dans `cli.py` via le flag `is_write`).
+"""
 
 from __future__ import annotations
 
+from ..core.errors import XaError
 from ..core.output import ok
 from ..core.parsers import summarize_tweet
 from ..core.registry import register
-from ._common import get_client, require_yes
-from ..core.errors import XaError
+from ._common import (
+    args_tweet_id,
+    get_client,
+    run_tweet_action,
+)
 
 
-# ─────────── argparse configurators ───────────
+# ─────────── Tableau des actions tweet "simples" ───────────
+# Chaque entrée : nom_commande → (OpName GraphQL, past_participle pour la
+# réponse, extra_vars éventuels)
+TWEET_ACTIONS: dict[str, tuple[str, str, dict]] = {
+    "like":        ("FavoriteTweet",   "liked",       {}),
+    "unlike":      ("UnfavoriteTweet", "unliked",     {}),
+    "retweet":     ("CreateRetweet",   "retweeted",   {"dark_request": False}),
+    "unretweet":   ("DeleteRetweet",   "unretweeted", {"dark_request": False}),
+    "bookmark":    ("CreateBookmark",  "bookmarked",  {}),
+    "unbookmark":  ("DeleteBookmark",  "unbookmarked", {}),
+}
 
-def _configure_post(sp):
+# ─────────── Argparse configurators ───────────
+
+def _args_post(sp):
     sp.add_argument("text")
     sp.add_argument("--reply-to", dest="reply_to",
                     help="ID du tweet auquel répondre (optionnel)")
-    sp.add_argument("--yes", action="store_true")
 
 
-def _configure_reply(sp):
+def _args_reply(sp):
     sp.add_argument("tweet_id")
     sp.add_argument("text")
-    sp.add_argument("--yes", action="store_true")
 
 
-def _configure_tw_yes(sp):
-    sp.add_argument("tweet_id")
-    sp.add_argument("--yes", action="store_true")
+# ─────────── Commandes ───────────
 
-
-# ─────────── commandes ───────────
-
-@register("post", configure=_configure_post, is_write=True)
+@register("post", configure=_args_post, is_write=True)
 def cmd_post(args) -> dict:
     """Publie un nouveau tweet (ou une réponse si --reply-to). Requiert --yes."""
-    require_yes(args, "post")
     client = get_client()
     variables = {
         "tweet_text": args.text,
@@ -45,7 +55,7 @@ def cmd_post(args) -> dict:
         "media": {"media_entities": [], "possibly_sensitive": False},
         "semantic_annotation_ids": [],
     }
-    if args.reply_to:
+    if getattr(args, "reply_to", None):
         variables["reply"] = {
             "in_reply_to_tweet_id": args.reply_to,
             "exclude_reply_user_ids": [],
@@ -60,78 +70,40 @@ def cmd_post(args) -> dict:
     return ok(summarize_tweet(tw))
 
 
-@register("reply", configure=_configure_reply, is_write=True)
+@register("reply", configure=_args_reply, is_write=True)
 def cmd_reply(args) -> dict:
     """Répond à un tweet. Requiert --yes."""
-    require_yes(args, "reply")
     args.reply_to = args.tweet_id
     return cmd_post(args)
 
 
-@register("delete-tweet", configure=_configure_tw_yes, is_write=True)
+@register("delete-tweet", configure=args_tweet_id, is_write=True)
 def cmd_delete_tweet(args) -> dict:
     """Supprime un de tes tweets. Requiert --yes."""
-    require_yes(args, "delete-tweet")
     client = get_client()
-    data = client.call("DeleteTweet", {
-        "tweet_id": args.tweet_id, "dark_request": False,
-    }, method="POST")
+    data = client.call(
+        "DeleteTweet",
+        {"tweet_id": args.tweet_id, "dark_request": False},
+        method="POST",
+    )
     return ok({"deleted": args.tweet_id, "raw": data.get("data")})
 
 
-@register("like", configure=_configure_tw_yes, is_write=True)
-def cmd_like(args) -> dict:
-    """Like un tweet. Requiert --yes."""
-    require_yes(args, "like")
-    client = get_client()
-    data = client.call("FavoriteTweet", {"tweet_id": args.tweet_id}, method="POST")
-    return ok({"liked": args.tweet_id, "raw": data.get("data")})
+# ─────────── 6 actions tweet identiques, générées depuis TWEET_ACTIONS ───────────
+
+def _make_tweet_action(op: str, past: str, extra_vars: dict):
+    """Crée une fonction cmd_* à partir d'une entrée TWEET_ACTIONS."""
+
+    def cmd(args) -> dict:
+        return run_tweet_action(args, op, past, extra_vars)
+
+    return cmd
 
 
-@register("unlike", configure=_configure_tw_yes, is_write=True)
-def cmd_unlike(args) -> dict:
-    """Retire ton like sur un tweet. Requiert --yes."""
-    require_yes(args, "unlike")
-    client = get_client()
-    data = client.call("UnfavoriteTweet", {"tweet_id": args.tweet_id}, method="POST")
-    return ok({"unliked": args.tweet_id, "raw": data.get("data")})
+for _name, (_op, _past, _extra) in TWEET_ACTIONS.items():
+    _fn = _make_tweet_action(_op, _past, _extra)
+    _fn.__doc__ = f"{_op} sur un tweet (requiert --yes)."
+    register(_name, configure=args_tweet_id, is_write=True)(_fn)
 
-
-@register("retweet", configure=_configure_tw_yes, is_write=True)
-def cmd_retweet(args) -> dict:
-    """Retweet (RT) un tweet. Requiert --yes."""
-    require_yes(args, "retweet")
-    client = get_client()
-    data = client.call("CreateRetweet", {
-        "tweet_id": args.tweet_id, "dark_request": False,
-    }, method="POST")
-    return ok({"retweeted": args.tweet_id, "raw": data.get("data")})
-
-
-@register("unretweet", configure=_configure_tw_yes, is_write=True)
-def cmd_unretweet(args) -> dict:
-    """Annule un RT. Requiert --yes."""
-    require_yes(args, "unretweet")
-    client = get_client()
-    data = client.call("DeleteRetweet", {
-        "source_tweet_id": args.tweet_id, "dark_request": False,
-    }, method="POST")
-    return ok({"unretweeted": args.tweet_id, "raw": data.get("data")})
-
-
-@register("bookmark", configure=_configure_tw_yes, is_write=True)
-def cmd_bookmark(args) -> dict:
-    """Ajoute un tweet à tes signets. Requiert --yes."""
-    require_yes(args, "bookmark")
-    client = get_client()
-    data = client.call("CreateBookmark", {"tweet_id": args.tweet_id}, method="POST")
-    return ok({"bookmarked": args.tweet_id, "raw": data.get("data")})
-
-
-@register("unbookmark", configure=_configure_tw_yes, is_write=True)
-def cmd_unbookmark(args) -> dict:
-    """Retire un tweet de tes signets. Requiert --yes."""
-    require_yes(args, "unbookmark")
-    client = get_client()
-    data = client.call("DeleteBookmark", {"tweet_id": args.tweet_id}, method="POST")
-    return ok({"unbookmarked": args.tweet_id, "raw": data.get("data")})
+# Cleanup loop variables
+del _name, _op, _past, _extra, _fn

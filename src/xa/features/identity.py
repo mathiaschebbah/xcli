@@ -8,6 +8,11 @@ from ..core.registry import register
 from ._common import get_client, resolve_user
 
 
+def _args_user(sp):
+    sp.add_argument("screen_name")
+    sp.add_argument("--fields", help="ex: screen_name,description,followers_count")
+
+
 @register("whoami")
 def cmd_whoami(args) -> dict:
     """Profil du compte X actuellement loggé (depuis le cookie twid)."""
@@ -33,12 +38,7 @@ def cmd_whoami(args) -> dict:
     })
 
 
-def _configure_user(sp):
-    sp.add_argument("screen_name")
-    sp.add_argument("--fields", help="ex: screen_name,description,followers_count")
-
-
-@register("user", configure=_configure_user)
+@register("user", configure=_args_user)
 def cmd_user(args) -> dict:
     """Profil détaillé d'un compte X par screen_name."""
     client = get_client()

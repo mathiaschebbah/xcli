@@ -45,15 +45,15 @@ def _fetch(url: str) -> bytes:
     return r.content
 
 
-def _configure(sp):
+def _args_harvest(sp):
     sp.add_argument(
         "--out-dir",
-        help="dossier où écrire x_ops.json et x_features.json "
-             "(défaut: le data/ du package, écrase celui embarqué)",
+        help="dossier où écrire x_ops.json (défaut: le data/ du package, "
+             "écrase celui embarqué)",
     )
 
 
-@register("harvest-ops", configure=_configure)
+@register("harvest-ops", configure=_args_harvest)
 def cmd_harvest_ops(args) -> dict:
     """Régénère x_ops.json + x_features.json depuis les bundles JS de x.com.
 

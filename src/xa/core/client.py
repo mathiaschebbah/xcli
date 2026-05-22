@@ -14,10 +14,10 @@ import random
 import re
 import sys
 import time
-import urllib.parse
 
 import requests
 
+from .auth import twid_to_uid
 from .errors import XaError
 from .features import load_features, save_features
 from .settings import BEARER, USER_AGENT
@@ -57,10 +57,9 @@ class XClient:
     # ───────────── identity ─────────────
 
     def whoami(self) -> dict | None:
-        """Extrait le user_id du cookie twid (`u=<id>`)."""
-        twid = urllib.parse.unquote(self.cookies.get("twid", ""))
-        m = re.search(r"u=(\d+)", twid)
-        return {"user_id": m.group(1)} if m else None
+        """Extrait le user_id depuis le cookie `twid`."""
+        uid = twid_to_uid(self.cookies.get("twid", ""))
+        return {"user_id": uid} if uid else None
 
     # ───────────── GraphQL call ─────────────
 

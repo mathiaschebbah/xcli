@@ -43,7 +43,7 @@ def _discover_sources() -> list[tuple[str, str, Path]]:
     return found
 
 
-def _configure(sp):
+def _args_cookies(sp):
     sp.add_argument("domain", help="domaine cible (ex: x.com, github.com)")
     sp.add_argument("--format",
                     choices=["json", "pretty", "netscape", "header"],
@@ -55,7 +55,7 @@ def _configure(sp):
                     help="filtre un profil ex: 'chrome/Profile 1'")
 
 
-@register("cookies", configure=_configure)
+@register("cookies", configure=_args_cookies)
 def cmd_cookies(args) -> dict:
     """Extrait les cookies d'un domaine depuis tous les profils Chrome/Brave/etc.
 
@@ -101,13 +101,12 @@ def cmd_cookies(args) -> dict:
             hint="ajoute --reveal si tu veux vraiment exporter les cookies",
         )
 
-    # Formats spéciaux
+    # Formats spéciaux (les valeurs sont toujours révélées ici, vu qu'on a
+    # vérifié --reveal plus haut)
     if args.format == "header":
-        # Garde la 1ère valeur par nom (header HTTP Cookie)
         seen: dict[str, str] = {}
         for r in all_rows:
-            val = r["value"] if args.reveal else _raw_value(r)
-            seen.setdefault(r["name"], val)
+            seen.setdefault(r["name"], r["value"])
         return ok({
             "header": "; ".join(f"{k}={v}" for k, v in seen.items()),
             "count": len(seen),
@@ -115,7 +114,6 @@ def cmd_cookies(args) -> dict:
     if args.format == "netscape":
         lines = ["# Netscape HTTP Cookie File"]
         for r in all_rows:
-            val = r["value"] if args.reveal else _raw_value(r)
             lines.append("\t".join([
                 r["domain"],
                 "TRUE" if r["domain"].startswith(".") else "FALSE",
@@ -123,7 +121,7 @@ def cmd_cookies(args) -> dict:
                 "TRUE" if r["secure"] else "FALSE",
                 str(int(r["expires"] or 0)),
                 r["name"],
-                val,
+                r["value"],
             ]))
         return ok({"netscape": "\n".join(lines), "count": len(all_rows)})
 
@@ -138,15 +136,6 @@ def _mask(name: str, value: str) -> str:
     if len(value) > 40:
         return value[:37] + "..."
     return value
-
-
-def _raw_value(r: dict) -> str:
-    """Pour --format header/netscape : il faut la VALEUR réelle même sans --reveal.
-
-    Comme on a masqué dans `all_rows`, on ne peut pas la récupérer. On préfère
-    afficher un placeholder pour signaler à l'user d'ajouter --reveal.
-    """
-    return "[redacted — ajoute --reveal pour la valeur réelle]"
 
 
 def _fmt_expiry(expires: float | None) -> str:

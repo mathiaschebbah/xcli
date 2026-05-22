@@ -1,5 +1,4 @@
-"""Contenu : `xa tweets`, `xa replies`, `xa media`, `xa likes`, `xa search`,
-`xa tweet`, `xa thread`."""
+"""Contenu : `xa tweets/replies/media/likes/search/tweet/thread`."""
 
 from __future__ import annotations
 
@@ -8,19 +7,17 @@ from ..core.pagination import paginate_capped
 from ..core.parsers import parse_tweet_entries, parse_user_entries, summarize_tweet
 from ..core.registry import register
 from ..core.settings import DEFAULT_LIMIT
-from ._common import get_client, resolve_user
+from ._common import (
+    args_paginated_user,
+    args_tweet_id_with_fields,
+    get_client,
+    run_user_paginated,
+)
 
 
-# ─────────── helpers de configuration ───────────
+# ─────────── args configurators spécifiques à content ───────────
 
-def _configure_paginated_user(sp):
-    sp.add_argument("screen_name")
-    sp.add_argument("--limit", type=int, default=DEFAULT_LIMIT)
-    sp.add_argument("--cursor")
-    sp.add_argument("--fields")
-
-
-def _configure_search(sp):
+def _args_search(sp):
     sp.add_argument("query")
     sp.add_argument(
         "--product",
@@ -32,77 +29,61 @@ def _configure_search(sp):
     sp.add_argument("--fields")
 
 
-def _configure_tweet(sp):
-    sp.add_argument("tweet_id")
-    sp.add_argument("--fields")
+# ─────────── commandes par user (paginées) ───────────
 
-
-# ─────────── helper privé pour les ops user-paginées ───────────
-
-def _user_paginated(args, op: str, vars_factory) -> dict:
-    client = get_client()
-    u = resolve_user(client, args.screen_name)
-    rows, next_c = paginate_capped(
-        client, op, vars_factory(u["rest_id"]),
-        parse_tweet_entries, args.limit, args.cursor,
-    )
-    return ok(select_fields(rows, args.fields),
-              next_cursor=next_c, count=len(rows))
-
-
-# ─────────── commandes ───────────
-
-@register("tweets", configure=_configure_paginated_user)
+@register("tweets", configure=args_paginated_user)
 def cmd_tweets(args) -> dict:
-    """Tweets publiés par un compte (sans réponses)."""
-    return _user_paginated(args, "UserTweets", lambda uid: {
+    """Tweets publiés par un compte (sans réponses, avec pinned)."""
+    return run_user_paginated(args, "UserTweets", lambda uid: {
         "userId": uid,
         "includePromotedContent": False,
         "withQuickPromoteEligibilityTweetFields": False,
         "withVoice": False,
         "withV2Timeline": True,
-    })
+    }, parse_tweet_entries)
 
 
-@register("replies", configure=_configure_paginated_user)
+@register("replies", configure=args_paginated_user)
 def cmd_replies(args) -> dict:
     """Tweets + réponses d'un compte."""
-    return _user_paginated(args, "UserTweetsAndReplies", lambda uid: {
+    return run_user_paginated(args, "UserTweetsAndReplies", lambda uid: {
         "userId": uid,
         "includePromotedContent": False,
         "withCommunity": True,
         "withVoice": False,
         "withV2Timeline": True,
-    })
+    }, parse_tweet_entries)
 
 
-@register("media", configure=_configure_paginated_user)
+@register("media", configure=args_paginated_user)
 def cmd_media(args) -> dict:
     """Tweets contenant un média (image, vidéo) d'un compte."""
-    return _user_paginated(args, "UserMedia", lambda uid: {
+    return run_user_paginated(args, "UserMedia", lambda uid: {
         "userId": uid,
         "includePromotedContent": False,
         "withClientEventToken": False,
         "withBirdwatchNotes": False,
         "withVoice": False,
         "withV2Timeline": True,
-    })
+    }, parse_tweet_entries)
 
 
-@register("likes", configure=_configure_paginated_user)
+@register("likes", configure=args_paginated_user)
 def cmd_likes(args) -> dict:
     """Tweets likés par un compte (si profil public)."""
-    return _user_paginated(args, "Likes", lambda uid: {
+    return run_user_paginated(args, "Likes", lambda uid: {
         "userId": uid,
         "includePromotedContent": False,
         "withClientEventToken": False,
         "withBirdwatchNotes": False,
         "withVoice": False,
         "withV2Timeline": True,
-    })
+    }, parse_tweet_entries)
 
 
-@register("search", configure=_configure_search)
+# ─────────── search ───────────
+
+@register("search", configure=_args_search)
 def cmd_search(args) -> dict:
     """Recherche : tweets (Latest/Top/Media) ou comptes (People)."""
     client = get_client()
@@ -121,7 +102,9 @@ def cmd_search(args) -> dict:
     )
 
 
-@register("tweet", configure=_configure_tweet)
+# ─────────── détail d'un tweet ───────────
+
+@register("tweet", configure=args_tweet_id_with_fields)
 def cmd_tweet(args) -> dict:
     """Détail d'un tweet par son ID."""
     client = get_client()
@@ -135,7 +118,7 @@ def cmd_tweet(args) -> dict:
     return ok(select_fields(summarize_tweet(tw), args.fields))
 
 
-@register("thread", configure=_configure_tweet)
+@register("thread", configure=args_tweet_id_with_fields)
 def cmd_thread(args) -> dict:
     """Fil de conversation autour d'un tweet (TweetDetail)."""
     client = get_client()
@@ -148,7 +131,9 @@ def cmd_thread(args) -> dict:
         "withBirdwatchNotes": False,
         "withVoice": False,
     })
-    # TweetDetail = structure différente : data.threaded_conversation_with_injections_v2
+    # TweetDetail : data.threaded_conversation_with_injections_v2 (structure
+    # différente des autres timelines, on l'inline ici plutôt que d'élargir
+    # le parser générique).
     instructions = (
         data.get("data", {})
         .get("threaded_conversation_with_injections_v2", {})

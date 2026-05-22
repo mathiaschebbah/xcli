@@ -9,7 +9,9 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sys
+import urllib.parse
 from pathlib import Path
 
 from .errors import XaError
@@ -89,10 +91,25 @@ def load_x_cookies(
 
 
 def save_cookies(cookies: dict[str, str]) -> None:
-    """Persiste les cookies dans `~/.config/xa/cookies.json` (mode 0600)."""
+    """Persiste les cookies dans `~/.config/xa/cookies.json` (mode 0600).
+
+    Ouvre le fichier avec 0o600 dès la création pour éviter une fenêtre
+    où il serait lisible par d'autres utilisateurs.
+    """
     CFG_DIR.mkdir(parents=True, exist_ok=True)
-    COOKIE_FILE.write_text(json.dumps(cookies, indent=2))
-    os.chmod(COOKIE_FILE, 0o600)
+    fd = os.open(
+        COOKIE_FILE,
+        os.O_WRONLY | os.O_CREAT | os.O_TRUNC,
+        0o600,
+    )
+    with os.fdopen(fd, "w") as f:
+        f.write(json.dumps(cookies, indent=2))
+
+
+def twid_to_uid(twid: str) -> str | None:
+    """Extrait le user_id depuis le cookie `twid` (format `u%3D<id>`)."""
+    m = re.search(r"u=(\d+)", urllib.parse.unquote(twid or ""))
+    return m.group(1) if m else None
 
 
 def read_cookies() -> dict[str, str]:

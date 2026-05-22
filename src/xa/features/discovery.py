@@ -2,18 +2,20 @@
 
 from __future__ import annotations
 
+import argparse
+
 from ..core.errors import XaError
 from ..core.ops import load_ops
 from ..core.output import ok
-from ..core.registry import COMMANDS, register
+from ..core.registry import COMMANDS, Command, register
 from ._common import get_client
 
 
-def _configure_ops(sp):
+def _args_ops(sp):
     sp.add_argument("--filter", help="filtre les ops dont le nom contient X")
 
 
-def _configure_help(sp):
+def _args_help(sp):
     sp.add_argument("cmd_name", nargs="?", help="nom d'une commande spécifique")
 
 
@@ -25,7 +27,7 @@ def cmd_trends(args) -> dict:
     return ok(data.get("data") or data)
 
 
-@register("ops", configure=_configure_ops)
+@register("ops", configure=_args_ops)
 def cmd_ops(args) -> dict:
     """Liste les opérations GraphQL connues dans le catalogue (158)."""
     ops = load_ops()
@@ -41,21 +43,65 @@ def cmd_ops(args) -> dict:
     return ok(out, count=len(out), total=len(ops))
 
 
-@register("help", configure=_configure_help)
+@register("help", configure=_args_help)
 def cmd_help(args) -> dict:
-    """Schéma machine-readable de toutes les commandes (ou d'une seule)."""
-    schema = {
-        c.name: {"description": c.description,
-                 "type": "write" if c.is_write else "read"}
-        for c in sorted(COMMANDS, key=lambda c: c.name)
-    }
+    """Schéma machine-readable de toutes les commandes (ou détail d'une seule).
+
+    Pour une commande spécifique, introspecte le parser argparse pour
+    exposer la signature complète (positional/optional, type, required,
+    choices, default, help).
+    """
     if args.cmd_name:
-        info = schema.get(args.cmd_name)
-        if not info:
+        cmd = next((c for c in COMMANDS if c.name == args.cmd_name), None)
+        if not cmd:
             raise XaError(
                 "unknown_command",
                 f"commande inconnue: {args.cmd_name}",
                 hint="lance `xa help` sans argument pour la liste",
             )
-        return ok(info)
+        return ok(_describe_command(cmd))
+    # Sinon: liste compacte de toutes les commandes
+    schema = {
+        c.name: {
+            "description": c.description,
+            "type": "write" if c.is_write else "read",
+        }
+        for c in sorted(COMMANDS, key=lambda c: c.name)
+    }
     return ok(schema)
+
+
+def _describe_command(cmd: Command) -> dict:
+    """Construit un schéma JSON détaillé d'une commande via introspection."""
+    sp = argparse.ArgumentParser(prog=f"xa {cmd.name}", add_help=False)
+    cmd.configure(sp)
+    if cmd.is_write:
+        sp.add_argument("--yes", action="store_true")
+
+    args_schema = []
+    for action in sp._actions:  # noqa: SLF001 — API argparse stable
+        if action.dest in ("help",):
+            continue
+        info = {
+            "name": action.dest,
+            "kind": "positional" if not action.option_strings else "option",
+            "flags": list(action.option_strings),
+            "required": bool(action.required),
+            "help": action.help,
+        }
+        if action.choices:
+            info["choices"] = list(action.choices)
+        if action.default is not None and action.default is not argparse.SUPPRESS:
+            info["default"] = action.default
+        if action.type:
+            info["type"] = getattr(action.type, "__name__", str(action.type))
+        if action.nargs is not None:
+            info["nargs"] = action.nargs
+        args_schema.append(info)
+
+    return {
+        "name": cmd.name,
+        "description": cmd.description,
+        "type": "write" if cmd.is_write else "read",
+        "arguments": args_schema,
+    }
