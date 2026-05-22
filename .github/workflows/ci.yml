@@ -28,8 +28,16 @@ jobs:
           uv run python -c "import xa; print('xa', xa.__version__)"
           uv run xa --help > /dev/null
           uv run xa help > /dev/null
+          uv run xa help search > /dev/null       # introspection per-command
+          uv run xa help post > /dev/null         # write command schema
+          uv run xa help raw > /dev/null          # raw escape hatch
           uv run xa ops --filter Search > /dev/null
           uv run xa cookies x.com > /dev/null || true   # OK si pas de Chrome en CI
+
+      - name: Smoke test — write lock works without --yes
+        run: |
+          out=$(uv run xa post "ci-test" 2>&1)
+          echo "$out" | grep -q "confirmation_required" || (echo "FAIL: write lock broken" && exit 1)
 
       - name: Check no syntax errors
         run: |

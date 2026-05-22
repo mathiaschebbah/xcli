@@ -7,6 +7,8 @@ Toutes ces commandes modifient ton compte → verrouillées par `--yes`
 
 from __future__ import annotations
 
+from copy import copy
+
 from ..core.errors import XaError
 from ..core.output import ok
 from ..core.parsers import summarize_tweet
@@ -18,16 +20,15 @@ from ._common import (
 )
 
 
-# ─────────── Tableau des actions tweet "simples" ───────────
-# Chaque entrée : nom_commande → (OpName GraphQL, past_participle pour la
-# réponse, extra_vars éventuels)
-TWEET_ACTIONS: dict[str, tuple[str, str, dict]] = {
-    "like":        ("FavoriteTweet",   "liked",       {}),
-    "unlike":      ("UnfavoriteTweet", "unliked",     {}),
-    "retweet":     ("CreateRetweet",   "retweeted",   {"dark_request": False}),
-    "unretweet":   ("DeleteRetweet",   "unretweeted", {"dark_request": False}),
-    "bookmark":    ("CreateBookmark",  "bookmarked",  {}),
-    "unbookmark":  ("DeleteBookmark",  "unbookmarked", {}),
+# Tableau des actions tweet "simples". Chaque entrée :
+#   nom_commande → (OpName GraphQL, past_participle, extra_vars, description)
+TWEET_ACTIONS: dict[str, tuple[str, str, dict, str]] = {
+    "like":       ("FavoriteTweet",   "liked",        {},                        "Like un tweet."),
+    "unlike":     ("UnfavoriteTweet", "unliked",      {},                        "Retire ton like sur un tweet."),
+    "retweet":    ("CreateRetweet",   "retweeted",    {"dark_request": False},   "Retweet (RT) un tweet."),
+    "unretweet":  ("DeleteRetweet",   "unretweeted",  {"dark_request": False},   "Annule un retweet."),
+    "bookmark":   ("CreateBookmark",  "bookmarked",   {},                        "Ajoute un tweet à tes signets."),
+    "unbookmark": ("DeleteBookmark",  "unbookmarked", {},                        "Retire un tweet de tes signets."),
 }
 
 # ─────────── Argparse configurators ───────────
@@ -73,8 +74,11 @@ def cmd_post(args) -> dict:
 @register("reply", configure=_args_reply, is_write=True)
 def cmd_reply(args) -> dict:
     """Répond à un tweet. Requiert --yes."""
-    args.reply_to = args.tweet_id
-    return cmd_post(args)
+    # Copie shallow d'args pour ne pas polluer le namespace original
+    # avec un attribut tweet_id qui n'existe pas dans cmd_post.
+    post_args = copy(args)
+    post_args.reply_to = args.tweet_id
+    return cmd_post(post_args)
 
 
 @register("delete-tweet", configure=args_tweet_id, is_write=True)
@@ -100,10 +104,16 @@ def _make_tweet_action(op: str, past: str, extra_vars: dict):
     return cmd
 
 
-for _name, (_op, _past, _extra) in TWEET_ACTIONS.items():
-    _fn = _make_tweet_action(_op, _past, _extra)
-    _fn.__doc__ = f"{_op} sur un tweet (requiert --yes)."
-    register(_name, configure=args_tweet_id, is_write=True)(_fn)
+def _register_tweet_actions() -> None:
+    """Enregistre les 6 actions tweet simples (like/unlike/RT/.../bookmark...).
 
-# Cleanup loop variables
-del _name, _op, _past, _extra, _fn
+    Encapsulé dans une fonction pour éviter de leak les variables de boucle
+    au niveau module (cleaner que `for ... del`).
+    """
+    for name, (op, past, extra, desc) in TWEET_ACTIONS.items():
+        fn = _make_tweet_action(op, past, extra)
+        fn.__doc__ = f"{desc} Requiert --yes."
+        register(name, configure=args_tweet_id, is_write=True)(fn)
+
+
+_register_tweet_actions()

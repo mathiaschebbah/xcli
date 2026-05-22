@@ -38,7 +38,9 @@ def register(
         configure: callable qui prend un sous-parser argparse et y attache
                    les arguments. Peut être None si la commande n'a pas d'args.
         is_write: True si la commande modifie l'état du compte X.
-                  Le verrou `--yes` est géré par `core/writes.py`.
+                  Le verrou `--yes` est géré par le dispatcher dans
+                  `cli.py:_dispatch` (qui injecte l'argument argparse et
+                  vérifie sa présence avant d'appeler la commande).
     """
 
     def deco(fn):

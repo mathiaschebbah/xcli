@@ -1,9 +1,16 @@
 """Helpers partagés par les features (DRY).
 
 Convention de nommage :
-- `_args_*` : configurateurs argparse (prennent un subparser)
-- `run_*`   : runners business-logic (prennent args, retournent dict)
-- `get_*`   : factories (client, etc.)
+- `args_*`   : configurateurs argparse partagés (publics, dans `_common.py`)
+- `_args_*`  : configurateurs argparse locaux à une feature (module-private)
+- `run_*`    : runners business-logic (prennent args, retournent dict)
+- `get_*`    : factories (client, etc.)
+
+Pour les écritures, marquer la commande avec `is_write=True` dans
+`@register(...)`. Le dispatcher (`cli.py:_dispatch`) injecte `--yes` et
+valide sa présence — il n'y a PAS de helper `require_yes()` à appeler
+manuellement (sauf cas dynamique comme `xa raw <op>` où l'op n'est
+connue qu'à l'exécution).
 """
 
 from __future__ import annotations
@@ -40,16 +47,6 @@ def resolve_user(client: XClient, screen_name: str) -> dict:
             hint="vérifie le screen_name (sans @)",
         )
     return u
-
-
-def require_yes(args, action: str) -> None:
-    """Vérifie que `--yes` est présent, sinon raise XaError."""
-    if not getattr(args, "yes", False):
-        raise XaError(
-            "confirmation_required",
-            f"l'action '{action}' modifie ton compte X et requiert --yes",
-            hint="ajoute --yes pour confirmer explicitement",
-        )
 
 
 # ─────────── argparse configurators réutilisables ───────────

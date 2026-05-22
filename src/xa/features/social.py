@@ -13,26 +13,27 @@ from ._common import (
 )
 
 
+def _follow_list_vars(user_id: str) -> dict:
+    """Variables GraphQL communes à Following et Followers."""
+    return {
+        "userId": user_id,
+        "includePromotedContent": False,
+        "withGrokTranslatedBio": False,
+    }
+
+
 @register("following", configure=args_paginated_user)
 def cmd_following(args) -> dict:
     """Comptes suivis par @screen_name."""
-    return run_user_paginated(
-        args, "Following",
-        lambda uid: {"userId": uid, "includePromotedContent": False,
-                     "withGrokTranslatedBio": False},
-        parse_user_entries,
-    )
+    return run_user_paginated(args, "Following", _follow_list_vars,
+                              parse_user_entries)
 
 
 @register("followers", configure=args_paginated_user)
 def cmd_followers(args) -> dict:
     """Comptes qui suivent @screen_name."""
-    return run_user_paginated(
-        args, "Followers",
-        lambda uid: {"userId": uid, "includePromotedContent": False,
-                     "withGrokTranslatedBio": False},
-        parse_user_entries,
-    )
+    return run_user_paginated(args, "Followers", _follow_list_vars,
+                              parse_user_entries)
 
 
 @register("follow", configure=args_screen, is_write=True)

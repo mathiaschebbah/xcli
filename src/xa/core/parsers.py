@@ -39,22 +39,41 @@ def parse_tweet_entries(payload: dict) -> tuple[list[dict], str | None]:
     def _add_tweet(item_content: dict) -> None:
         tw = (item_content.get("tweet_results") or {}).get("result") or {}
         summary = summarize_tweet(tw)
-        if summary["id"] and summary["id"] not in seen_ids:
-            seen_ids.add(summary["id"])
+        tweet_id = summary["id"]
+        # Tweets sans id (tombstones, withholdings) sont gardés pour
+        # signaler leur présence ; dédup uniquement sur les ids non-null.
+        if tweet_id is None:
             out.append(summary)
+            return
+        if tweet_id not in seen_ids:
+            seen_ids.add(tweet_id)
+            out.append(summary)
+
+    def _add_module_items(items: list) -> None:
+        for it in items or []:
+            ic = ((it or {}).get("item") or {}).get("itemContent") or {}
+            if ic:
+                _add_tweet(ic)
 
     for inst in instructions:
         itype = inst.get("type")
+
         # TimelinePinEntry : un seul tweet pinned au top du profil
         if itype == "TimelinePinEntry":
             entry = inst.get("entry") or {}
-            content = entry.get("content", {})
-            ic = content.get("itemContent") or {}
+            ic = (entry.get("content", {}) or {}).get("itemContent") or {}
             if ic:
                 _add_tweet(ic)
             continue
+
+        # TimelineAddToModule : module conversationnel (utilisé dans HomeTimeline)
+        if itype == "TimelineAddToModule":
+            _add_module_items(inst.get("moduleItems") or inst.get("items") or [])
+            continue
+
         if itype != "TimelineAddEntries":
             continue
+
         for entry in inst.get("entries", []):
             eid = entry.get("entryId", "")
             content = entry.get("content", {})
@@ -65,11 +84,8 @@ def parse_tweet_entries(payload: dict) -> tuple[list[dict], str | None]:
             ):
                 _add_tweet(content.get("itemContent", {}))
             elif eid.startswith("profile-conversation-") or eid.startswith("conversationthread-"):
-                # TimelineAddToModule (threadé) : entry.content.items[*].item.itemContent
-                for it in (content.get("items") or []):
-                    ic = ((it or {}).get("item") or {}).get("itemContent") or {}
-                    if ic:
-                        _add_tweet(ic)
+                # Module conversationnel imbriqué dans TimelineAddEntries
+                _add_module_items(content.get("items") or [])
             elif eid.startswith("cursor-bottom-"):
                 cursor = (
                     content.get("value")
