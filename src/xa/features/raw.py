@@ -18,7 +18,7 @@ from ..core.errors import XaError
 from ..core.ops import load_ops
 from ..core.output import ok
 from ..core.registry import register
-from ._common import get_client
+from ._common import attach_yes_flag, get_client
 
 
 def _args_raw(sp):
@@ -26,8 +26,7 @@ def _args_raw(sp):
     sp.add_argument("--vars",
                     help='JSON des variables (ex: \'{"tweetId":"123"}\')')
     sp.add_argument("--method", default="GET", choices=["GET", "POST"])
-    sp.add_argument("--yes", action="store_true",
-                    help="obligatoire si l'op résolue est une mutation")
+    attach_yes_flag(sp)
 
 
 @register("raw", configure=_args_raw)

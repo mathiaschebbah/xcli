@@ -15,6 +15,20 @@ from ._common import (
 )
 
 
+# ─────────── vars factory ───────────
+
+def _user_timeline_vars(user_id: str) -> dict:
+    """Variables GraphQL communes aux 4 timelines user (tweets/replies/media/likes)."""
+    return {
+        "userId": user_id,
+        "includePromotedContent": False,
+        "withClientEventToken": False,
+        "withBirdwatchNotes": False,
+        "withVoice": False,
+        "withV2Timeline": True,
+    }
+
+
 # ─────────── args configurators spécifiques à content ───────────
 
 def _args_search(sp):
@@ -34,51 +48,36 @@ def _args_search(sp):
 @register("tweets", configure=args_paginated_user)
 def cmd_tweets(args) -> dict:
     """Tweets publiés par un compte (sans réponses, avec pinned)."""
-    return run_user_paginated(args, "UserTweets", lambda uid: {
-        "userId": uid,
-        "includePromotedContent": False,
-        "withQuickPromoteEligibilityTweetFields": False,
-        "withVoice": False,
-        "withV2Timeline": True,
-    }, parse_tweet_entries)
+    def _vars(uid):
+        v = _user_timeline_vars(uid)
+        v["withQuickPromoteEligibilityTweetFields"] = False
+        return v
+    return run_user_paginated(args, "UserTweets", _vars, parse_tweet_entries)
 
 
 @register("replies", configure=args_paginated_user)
 def cmd_replies(args) -> dict:
     """Tweets + réponses d'un compte."""
-    return run_user_paginated(args, "UserTweetsAndReplies", lambda uid: {
-        "userId": uid,
-        "includePromotedContent": False,
-        "withCommunity": True,
-        "withVoice": False,
-        "withV2Timeline": True,
-    }, parse_tweet_entries)
+    def _vars(uid):
+        v = _user_timeline_vars(uid)
+        v["withCommunity"] = True
+        return v
+    return run_user_paginated(args, "UserTweetsAndReplies", _vars,
+                              parse_tweet_entries)
 
 
 @register("media", configure=args_paginated_user)
 def cmd_media(args) -> dict:
     """Tweets contenant un média (image, vidéo) d'un compte."""
-    return run_user_paginated(args, "UserMedia", lambda uid: {
-        "userId": uid,
-        "includePromotedContent": False,
-        "withClientEventToken": False,
-        "withBirdwatchNotes": False,
-        "withVoice": False,
-        "withV2Timeline": True,
-    }, parse_tweet_entries)
+    return run_user_paginated(args, "UserMedia", _user_timeline_vars,
+                              parse_tweet_entries)
 
 
 @register("likes", configure=args_paginated_user)
 def cmd_likes(args) -> dict:
     """Tweets likés par un compte (si profil public)."""
-    return run_user_paginated(args, "Likes", lambda uid: {
-        "userId": uid,
-        "includePromotedContent": False,
-        "withClientEventToken": False,
-        "withBirdwatchNotes": False,
-        "withVoice": False,
-        "withV2Timeline": True,
-    }, parse_tweet_entries)
+    return run_user_paginated(args, "Likes", _user_timeline_vars,
+                              parse_tweet_entries)
 
 
 # ─────────── search ───────────

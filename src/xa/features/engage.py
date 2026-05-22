@@ -22,13 +22,16 @@ from ._common import (
 
 # Tableau des actions tweet "simples". Chaque entrée :
 #   nom_commande → (OpName GraphQL, past_participle, extra_vars, description)
+# Ces commandes prennent toutes un tweet_id, retournent {past: id, raw: ...},
+# sont des mutations (POST), et exigent --yes via is_write=True.
 TWEET_ACTIONS: dict[str, tuple[str, str, dict, str]] = {
-    "like":       ("FavoriteTweet",   "liked",        {},                        "Like un tweet."),
-    "unlike":     ("UnfavoriteTweet", "unliked",      {},                        "Retire ton like sur un tweet."),
-    "retweet":    ("CreateRetweet",   "retweeted",    {"dark_request": False},   "Retweet (RT) un tweet."),
-    "unretweet":  ("DeleteRetweet",   "unretweeted",  {"dark_request": False},   "Annule un retweet."),
-    "bookmark":   ("CreateBookmark",  "bookmarked",   {},                        "Ajoute un tweet à tes signets."),
-    "unbookmark": ("DeleteBookmark",  "unbookmarked", {},                        "Retire un tweet de tes signets."),
+    "like":         ("FavoriteTweet",   "liked",        {},                        "Like un tweet."),
+    "unlike":       ("UnfavoriteTweet", "unliked",      {},                        "Retire ton like sur un tweet."),
+    "retweet":      ("CreateRetweet",   "retweeted",    {"dark_request": False},   "Retweet (RT) un tweet."),
+    "unretweet":    ("DeleteRetweet",   "unretweeted",  {"dark_request": False},   "Annule un retweet."),
+    "bookmark":     ("CreateBookmark",  "bookmarked",   {},                        "Ajoute un tweet à tes signets."),
+    "unbookmark":   ("DeleteBookmark",  "unbookmarked", {},                        "Retire un tweet de tes signets."),
+    "delete-tweet": ("DeleteTweet",     "deleted",      {"dark_request": False},   "Supprime un de tes tweets."),
 }
 
 # ─────────── Argparse configurators ───────────
@@ -81,19 +84,7 @@ def cmd_reply(args) -> dict:
     return cmd_post(post_args)
 
 
-@register("delete-tweet", configure=args_tweet_id, is_write=True)
-def cmd_delete_tweet(args) -> dict:
-    """Supprime un de tes tweets. Requiert --yes."""
-    client = get_client()
-    data = client.call(
-        "DeleteTweet",
-        {"tweet_id": args.tweet_id, "dark_request": False},
-        method="POST",
-    )
-    return ok({"deleted": args.tweet_id, "raw": data.get("data")})
-
-
-# ─────────── 6 actions tweet identiques, générées depuis TWEET_ACTIONS ───────────
+# ─────────── 7 actions tweet identiques, générées depuis TWEET_ACTIONS ───────────
 
 def _make_tweet_action(op: str, past: str, extra_vars: dict):
     """Crée une fonction cmd_* à partir d'une entrée TWEET_ACTIONS."""

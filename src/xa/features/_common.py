@@ -59,6 +59,18 @@ def args_paginated_user(sp) -> None:
     sp.add_argument("--fields")
 
 
+def attach_yes_flag(sp) -> None:
+    """Attache l'argument --yes à un sous-parser. Source unique de la
+    définition (cli.py pour les writes auto, discovery.py pour le schéma
+    introspecté, raw.py pour la mutation dynamique).
+    """
+    sp.add_argument(
+        "--yes",
+        action="store_true",
+        help="confirme explicitement cette action visible publiquement",
+    )
+
+
 def args_screen(sp) -> None:
     """`<screen_name>` seul (pour follow/unfollow)."""
     sp.add_argument("screen_name")
@@ -119,12 +131,15 @@ def run_friendship(
         headers={"content-type": "application/x-www-form-urlencoded"},
         data={"user_id": u["rest_id"]},
     )
+    past = "followed" if action == "create" else "unfollowed"
+    verb = "follow" if action == "create" else "unfollow"
     if r.status_code != 200:
+        # Code d'erreur orienté commande utilisateur (follow_failed) plutôt
+        # que verbe REST interne (create_failed).
         raise XaError(
-            f"{action}_failed",
+            f"{verb}_failed",
             f"HTTP {r.status_code}: {r.text[:200]}",
         )
-    past = "followed" if action == "create" else "unfollowed"
     return ok({past: screen_name, "user_id": u["rest_id"]})
 
 

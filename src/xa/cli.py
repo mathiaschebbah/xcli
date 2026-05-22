@@ -16,17 +16,14 @@ from . import features  # noqa: F401 — déclenche tous les @register
 from .core.errors import XaError
 from .core.output import emit, err
 from .core.registry import COMMANDS, Command
+from .features._common import attach_yes_flag
 
 
 def _build_subparser(sub, cmd: Command) -> argparse.ArgumentParser:
     sp = sub.add_parser(cmd.name, help=cmd.description)
     cmd.configure(sp)
     if cmd.is_write:
-        sp.add_argument(
-            "--yes",
-            action="store_true",
-            help="confirme explicitement cette action visible publiquement",
-        )
+        attach_yes_flag(sp)
     sp.set_defaults(_cmd=cmd)
     return sp
 

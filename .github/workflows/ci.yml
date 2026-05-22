@@ -36,8 +36,11 @@ jobs:
 
       - name: Smoke test — write lock works without --yes
         run: |
-          out=$(uv run xa post "ci-test" 2>&1)
-          echo "$out" | grep -q "confirmation_required" || (echo "FAIL: write lock broken" && exit 1)
+          out=$(uv run xa post "ci-test" 2>&1) || true
+          echo "$out" | grep -q "confirmation_required" || {
+            echo "FAIL: write lock broken — got: $out"
+            exit 1
+          }
 
       - name: Check no syntax errors
         run: |

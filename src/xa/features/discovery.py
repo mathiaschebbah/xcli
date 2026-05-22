@@ -8,21 +8,36 @@ from ..core.errors import XaError
 from ..core.ops import load_ops
 from ..core.output import ok
 from ..core.registry import COMMANDS, Command, register
-from ._common import get_client
+from ._common import attach_yes_flag, get_client
 
 
-# Flag global accepté par toutes les commandes via cli.py (hoist de --human
-# vers le début d'argv). Documenté explicitement dans tous les schemas.
-_GLOBAL_FLAGS = [
-    {
-        "name": "human",
-        "kind": "option",
-        "flags": ["--human"],
-        "required": False,
-        "default": False,
-        "help": "sortie lisible humain (sinon JSON)",
-    }
-]
+def _global_flags_from_parser() -> list[dict]:
+    """Introspecte le parser top-level pour exposer les --flag globaux.
+
+    Source unique de vérité : la même que celle utilisée à l'exécution.
+    Évite de désynchroniser un schéma main-maintenu avec le parser réel.
+    """
+    # Import paresseux pour éviter le cycle cli ↔ discovery
+    from ..cli import build_parser
+
+    parser = build_parser()
+    out = []
+    for action in parser._actions:  # noqa: SLF001 — argparse stable
+        if action.dest in ("help", "cmd"):
+            continue
+        if not action.option_strings:
+            continue
+        info = {
+            "name": action.dest,
+            "kind": "option",
+            "flags": list(action.option_strings),
+            "required": bool(action.required),
+            "help": action.help,
+        }
+        if action.default is not None and action.default is not argparse.SUPPRESS:
+            info["default"] = action.default
+        out.append(info)
+    return out
 
 
 def _args_ops(sp):
@@ -84,7 +99,7 @@ def cmd_help(args) -> dict:
             }
             for c in sorted(COMMANDS, key=lambda c: c.name)
         },
-        "global_flags": _GLOBAL_FLAGS,
+        "global_flags": _global_flags_from_parser(),
         "hint": "appelle `xa help <cmd>` pour le schéma détaillé d'une commande",
     })
 
@@ -94,11 +109,7 @@ def _describe_command(cmd: Command) -> dict:
     sp = argparse.ArgumentParser(prog=f"xa {cmd.name}", add_help=False)
     cmd.configure(sp)
     if cmd.is_write:
-        sp.add_argument(
-            "--yes",
-            action="store_true",
-            help="confirme explicitement cette action visible publiquement",
-        )
+        attach_yes_flag(sp)
 
     args_schema = []
     for action in sp._actions:  # noqa: SLF001 — API argparse stable
@@ -127,7 +138,7 @@ def _describe_command(cmd: Command) -> dict:
         "description": cmd.description,
         "type": "write" if cmd.is_write else "read",
         "arguments": args_schema,
-        "global_flags": _GLOBAL_FLAGS,
+        "global_flags": _global_flags_from_parser(),
     }
     # raw est registered is_write=False car le type d'op est résolu à
     # l'exécution. On signale à l'agent que --yes est requis si la cible

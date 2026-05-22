@@ -172,12 +172,19 @@ the account will be flagged or suspended.
 | Error code | Cause | Fix |
 |---|---|---|
 | `auth_required` | no cookies saved | `xa auth-init` |
-| `session_invalid` | cookies expired | log in again in Chrome, then `xa auth-init` |
+| `session_invalid` | cookies expired / 401 / 403 from X | log in again in Chrome, then `xa auth-init` |
+| `no_cookies` | no logged-in browser found | open Chrome, log in to https://x.com, retry |
 | `user_not_found` | typo or banned/protected | check the screen_name |
+| `unknown_command` | typo in `xa help <cmd>` | call `xa help` (no arg) for the index |
 | `confirmation_required` | tried a write without `--yes` | re-run with `--yes` |
 | `unknown_op` | op not in catalog | `xa harvest-ops` to refresh, or `xa ops --filter <name>` |
 | `http_error: HTTP 404` | stale queryId (X updated its API) | `xa harvest-ops` to regenerate the catalog |
-| `http_error: HTTP 403` | `x-client-transaction-id` algo broken or cookies bad | check `x-client-transaction-id` lib installed; if OK, re-init auth |
+| `http_error: HTTP 403` | `x-client-transaction-id` broken | check `x-client-transaction-id` lib installed; if OK, re-init auth |
+| `post_failed` | server accepted the request but returned no tweet (shadow-ban, media error, etc.) | inspect the `hint` field; try again later or via web client |
+| `follow_failed` / `unfollow_failed` | REST `/1.1/friendships/{create,destroy}` returned non-200 | check rate limits, recently blocked users, etc. |
+| `reveal_required` | `xa cookies <domain> --format header/netscape` without `--reveal` | add `--reveal` if you actually want to export cookies in clear |
+| `invalid_json` | malformed `--vars` JSON in `xa raw` | quote properly: `--vars '{"k":"v"}'` |
+| `too_many_retries` | feature flag discovery loop exhausted | likely API change — try `xa harvest-ops` |
 
 ### When ops fail repeatedly (X updated its client)
 ```bash
