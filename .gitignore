@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+wheels/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# uv
+.uv/
+
+# Output / cache local
+*.csv
+*.tsv
+*.parquet
+search_*.json
+tweets_*.json
+followers_*.json
+following_*.json
+
+# Bundles JS X (cache local de harvest_x_ops.py)
+x_bundles/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets — ne JAMAIS commit
+.env
+.env.*
+!.env.example
+cookies.json
+*.cookie
+*.session

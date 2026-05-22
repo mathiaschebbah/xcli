@@ -1,0 +1,28 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pineapple-search"
+version = "1.0.0"
+description = "CLI agent-native pour l'API privée web de X.com (Twitter), avec contournement du x-client-transaction-id."
+readme = "README.md"
+requires-python = ">=3.13"
+license = { text = "MIT" }
+authors = [{ name = "Mathias" }]
+keywords = ["twitter", "x", "cli", "scraper", "agent", "graphql", "reverse-engineering"]
+classifiers = [
+    "Private :: Do Not Upload",
+]
+dependencies = [
+    "browser-cookie3>=0.20.1",
+    "bs4>=0.0.2",
+    "requests>=2.34.2",
+    "x-client-transaction-id>=0.0.1",
+]
+
+[project.scripts]
+xa = "xa.cli:cli"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/xa"]

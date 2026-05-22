@@ -1,0 +1,1343 @@
+{
+  "total": 158,
+  "by_type_count": {
+    "query": 94,
+    "mutation": 64,
+    "subscription": 0
+  },
+  "by_category_count": {
+    "Add": 1,
+    "Authenticate": 1,
+    "Bakery": 1,
+    "Blocked": 2,
+    "Blue": 1,
+    "Bookmark": 1,
+    "Combined": 1,
+    "Communities": 6,
+    "Community": 25,
+    "Connect": 1,
+    "Conversation": 2,
+    "Create": 7,
+    "Creator": 1,
+    "Data": 1,
+    "Delete": 7,
+    "Disable": 1,
+    "Dm": 1,
+    "Downvote": 1,
+    "Edit": 1,
+    "Enable": 1,
+    "Explore": 2,
+    "Favorite": 1,
+    "Finance": 1,
+    "Followers": 2,
+    "Following": 1,
+    "Generic": 1,
+    "Get": 2,
+    "Global": 2,
+    "Home": 2,
+    "Join": 1,
+    "Leave": 1,
+    "Likes": 1,
+    "List": 15,
+    "Lists": 2,
+    "Media": 1,
+    "Moderate": 1,
+    "Moderated": 1,
+    "Mute": 1,
+    "Muted": 1,
+    "Payments": 1,
+    "Pin": 2,
+    "Pinned": 1,
+    "Profile": 2,
+    "Put": 1,
+    "Remove": 1,
+    "Request": 1,
+    "Search": 1,
+    "Sharing": 1,
+    "Similar": 1,
+    "Super": 1,
+    "Supported": 1,
+    "Trend": 2,
+    "Tweet": 3,
+    "Undo": 1,
+    "Unfavorite": 1,
+    "Unmention": 1,
+    "Unmoderate": 1,
+    "Unmute": 1,
+    "Unpin": 2,
+    "Update": 2,
+    "Upsells": 1,
+    "Urt": 1,
+    "User": 15,
+    "Users": 3,
+    "Viewer": 1,
+    "Write": 1,
+    "misc": 6
+  },
+  "operations": [
+    {
+      "queryId": "D1nwFlsu_qHsX92YzoRaaA",
+      "operationName": "AddContentDisclosure",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "r7VUmxbfqNkx7uwjgONSNw",
+      "operationName": "AuthenticatePeriscope",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "pROR-yRiBVsEjJyHt3fvhg",
+      "operationName": "BakeryQuery",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "PImTpxq2Enktz6aaTr6Lkg",
+      "operationName": "BlockedAccountsAll",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "82qgCTJBLrDAbrxuVUWMBg",
+      "operationName": "BlockedAccountsImported",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "crKOXrAHR3W3aPuKEJG8GA",
+      "operationName": "BlueVerifiedFollowers",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "OLqmUeJiIBcS9aLxg_qhOQ",
+      "operationName": "BookmarkSearchTimeline",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "GAZ30-3p0JcgcYvPNA0IJw",
+      "operationName": "CombinedLists",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "FpA1LTcHu3vk4JQjDvp4Tg",
+      "operationName": "CommunitiesExploreTimeline",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "xm1irSse72yjs3GX_zaUhg",
+      "operationName": "CommunitiesMainDiscoveryModule",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "ka9urimVUngifjNmpj3I2A",
+      "operationName": "CommunitiesMainPageTimeline",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "keBi-IFOHQFR59XV8-JCbw",
+      "operationName": "CommunitiesMembershipsSlice",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "MogKlpyJ2Gjm3EkO9ySqIQ",
+      "operationName": "CommunitiesMembershipsTimeline",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "dGPLIKm6Fz896eIOXHLcPg",
+      "operationName": "CommunitiesRankedTimeline",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "snxS27FfPG3wo5zHl9oGeA",
+      "operationName": "CommunityAboutTimeline",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "vLS7mhOqMLtGZdXqFP1DEg",
+      "operationName": "CommunityByRestId",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "-oxunWxVyyfBA7MkGMQqMQ",
+      "operationName": "CommunityCreateRule",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "xvMjMGVFUWrFT-7GxLK94Q",
+      "operationName": "CommunityDiscoveryTimeline",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "GQ8By90KSKh4iUSgrsj0hw",
+      "operationName": "CommunityEditBannerMedia",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "QzEcwyG5-ePH_IFvN92Xgg",
+      "operationName": "CommunityEditName",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "9TYpgbkD-c2rKmpeF_PZCw",
+      "operationName": "CommunityEditPurpose",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "Ps0w6za_U2yyixe8a3hCHA",
+      "operationName": "CommunityEditQuestion",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "ASqVyMPbvWMO2Jl2udvXcw",
+      "operationName": "CommunityEditRule",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "4a4shWGCv930ZLsClUUIEg",
+      "operationName": "CommunityHashtagsTimeline",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "RJLmja51UdSwatzo-h8-HQ",
+      "operationName": "CommunityMediaLoggedOutTimeline",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "cMhAbdDdk-pZKGwqi5FY_g",
+      "operationName": "CommunityMediaTimeline",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "wLq8nJhuzS5Tzq2p-dgIlw",
+      "operationName": "CommunityMemberRelationshipTypeahead",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "QWQ2Z2nw2H3KiD3qqMb6UQ",
+      "operationName": "CommunityModerationKeepTweet",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "cI7NEW0bCgYXfY2fsq6h0A",
+      "operationName": "CommunityModerationTweetCasesSlice",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "7W5Im-Z2q-v81NbUkiAvKQ",
+      "operationName": "CommunityRemoveBannerMedia",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "0SkYzk2GE0vpHbvpZt1Ruw",
+      "operationName": "CommunityRemoveRule",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "SrCOaQHd6cmGFa0W3Q2rBg",
+      "operationName": "CommunityReorderRules",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "rB5JjjcOg_-PpiHqwSEcag",
+      "operationName": "CommunityTweetModerationLogSlice",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "XSecWy_EYKNum_wDxOiSgw",
+      "operationName": "CommunityTweetsLoggedOutTimeline",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "BKvjKir30Khfu5dFo0YWgA",
+      "operationName": "CommunityTweetsRankedLoggedOutTimeline",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "gabM2RYROuhItXzDYUdjyA",
+      "operationName": "CommunityTweetsTimeline",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "7SZnPJ1qwHqUsFVjbLEVig",
+      "operationName": "CommunityUpdateRole",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "bz8uZZOzk3SUQUKTPioZpQ",
+      "operationName": "CommunityUserInvite",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "_qsnOaYZy00m-KSiTIFyEA",
+      "operationName": "CommunityUserRelationshipTypeahead",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "z0nRGUi8B44OlvbHYTsprw",
+      "operationName": "ConnectTabTimeline",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "57WYJNnWH0vM3Ip_gm8B2g",
+      "operationName": "ConversationControlChange",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "OoMO_aSZ1ZXjegeamF9QmA",
+      "operationName": "ConversationControlDelete",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "aoDbu3RHznuiSkQ9aNM67Q",
+      "operationName": "CreateBookmark",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "uL--Q0pdGxf9qKuHQpKXdw",
+      "operationName": "CreateCommunity",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "7jEc7ECTTDcNaqsMhjTxXg",
+      "operationName": "CreateHighlight",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "UQRa0jJ9doxGEIQRea1Y0w",
+      "operationName": "CreateList",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "ORca0vL7u8yMbrXlg9Aw5w",
+      "operationName": "CreateNoteTweet",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "mbRO74GrOvSfRcJnlMapnQ",
+      "operationName": "CreateRetweet",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "5CdvsV_zjv4L64XFifAglw",
+      "operationName": "CreateTweet",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "RzYIj_hWpiM2sypkNmftXg",
+      "operationName": "CreatorSubscriptionsTimeline",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "xF6sXnKJfS2AOylzxRjf6A",
+      "operationName": "DataSaverMode",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "Wlmlj2-xzyS1GN3a6cj-mQ",
+      "operationName": "DeleteBookmark",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "YeIV-eqGwEZXDtYaDsJz2Q",
+      "operationName": "DeleteContentDisclosure",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "ea-VVDSLIEYNY2_2aPg3Uw",
+      "operationName": "DeleteHighlight",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "UnN9Th1BDbeLjpgjGSpL3Q",
+      "operationName": "DeleteList",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "fgmmT4S2CMll4V15vcF9cQ",
+      "operationName": "DeleteListBanner",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "ZyZigVsNiFO6v1dEks1eWg",
+      "operationName": "DeleteRetweet",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "nxpZCY2K-I6QoFHAHeojFQ",
+      "operationName": "DeleteTweet",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "g2m0pAOamawNtVIfjXNMJg",
+      "operationName": "DisableVerifiedPhoneLabel",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "IYw9u1KEhrS-t-BXsau4Uw",
+      "operationName": "dmBlockUser",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "of_N6O33zfyD4qsFJMYFxA",
+      "operationName": "DmNsfwMediaFilterUpdate",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "Krbs6Nak_o7liWQwfV1jOQ",
+      "operationName": "dmUnblockUser",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "Iu4kUV4vd_iHMupiHPPrAQ",
+      "operationName": "DownvoteTweet",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "lzW0S5xhifd3MPGr0DAa0A",
+      "operationName": "EditListBanner",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "C3RJFfMsb_KcEytpKmRRkw",
+      "operationName": "EnableVerifiedPhoneLabel",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "NxSv0JBN6RdcYKUKi_H53Q",
+      "operationName": "ExplorePage",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "uki7ux32A-MAMiznJ5_uLQ",
+      "operationName": "ExploreSidebar",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "lI07N6Otwv1PhnEgXILM7A",
+      "operationName": "FavoriteTweet",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "4BInQe9OX1qSSZYKT5LB2w",
+      "operationName": "FinanceSearchTags",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "_orfRBQae57vylFPH0Huhg",
+      "operationName": "Followers",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "XHuroE2oWOl32tc_rjQytw",
+      "operationName": "FollowersYouKnow",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "F42cDX8PDFxkbjjq6JrM2w",
+      "operationName": "Following",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "_dGVIf1cY6xFanFNPsAzPQ",
+      "operationName": "GenericTimelineById",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "PFIxTk8owMoZgiMccP0r4g",
+      "operationName": "getAltTextPromptPreference",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "aQ-b88K_Lp7dgHX53MqNQQ",
+      "operationName": "GetUserClaims",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "1bMz-9lPrmIXrhFmXntTHw",
+      "operationName": "GetUsernameAvailabilityAndSuggestions",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "mVQneZqcoJ8cq6KyPhOaVw",
+      "operationName": "GlobalCommunitiesLatestPostSearchTimeline",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "tFCoI0yNtVLK9nhz0teG4w",
+      "operationName": "GlobalCommunitiesPostSearchTimeline",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "0dateTVgvXjpkf7kyBZy0g",
+      "operationName": "HomeLatestTimeline",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "7zlnp2TxC044W4C1ZUJMHw",
+      "operationName": "HomeTimeline",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "TQ-ErN9XPSjNkSY4ZB7W6Q",
+      "operationName": "JoinCommunity",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "q9LMMKLXMQ5t9AdHYjm7Ew",
+      "operationName": "LeaveCommunity",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "CDWHmpZeSdIJ3HGeRbNm0w",
+      "operationName": "Likes",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "vWPi0CTMoPFsjsL6W4IynQ",
+      "operationName": "ListAddMember",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "t9AbdyHaJVfjL9jsODwgpQ",
+      "operationName": "ListByRestId",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "LDQpQ89B5ipR8izCKrWU0g",
+      "operationName": "ListBySlug",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "7YmZLOtUwsu7uUILLBZhjg",
+      "operationName": "ListCreationRecommendedUsers",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "yZlMb9tZwwDR3koF14dFgw",
+      "operationName": "ListEditRecommendedUsers",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "7UuJsFvnWuZo0HmxrzU42Q",
+      "operationName": "ListLatestTweetsTimeline",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "oIetCo19avgStX4mOnGsPg",
+      "operationName": "ListMembers",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "hn9KY-pZkh-oRBVAtYcpSQ",
+      "operationName": "ListMemberships",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "5eUATiy7RZHeOMVM5ZZIcg",
+      "operationName": "ListOwnerships",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "k6XNxM7f9JrrqcITWhkv0Q",
+      "operationName": "ListRankedTweetsTimeline",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "cAGvZIu7SW0YlLYynz3VYA",
+      "operationName": "ListRemoveMember",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "pV_to3-GLwhDQj5iS5iRbQ",
+      "operationName": "ListsDiscovery",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "YTkV8GjFNGfgnhRNP6kDbQ",
+      "operationName": "ListSearchTimeline",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "220aad0McX-K9AEQTtkApQ",
+      "operationName": "ListsManagementPageTimeline",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "Gpws7iVbAR7ebO3qCCYmPw",
+      "operationName": "ListSubscribe",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "3oBsFck-psIlbswYUEh3pQ",
+      "operationName": "ListSubscribers",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "-diULb6PX5grQ_MvItGiJQ",
+      "operationName": "ListUnsubscribe",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "B2YIQZH1Iafpkj4kVfkASA",
+      "operationName": "MediaTabVideoMixer",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "IpRYzfu2uxAgHfB_AucjNQ",
+      "operationName": "ModeratedTimeline",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "pjFnHGVqCjTcZol0xcBJjw",
+      "operationName": "ModerateTweet",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "b1JcCR81fmpLELcK2OHX9w",
+      "operationName": "MutedAccounts",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "ZYyanJsskNUcltu9bliMLA",
+      "operationName": "MuteList",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "pnP0TpmPEJiiJuN9T-LU4Q",
+      "operationName": "PaymentsUsersTypeahead",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "SnNm4YWv4Xu26VSx-MIYlw",
+      "operationName": "PinnedTimelines",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "Sf_ZnsZgswesjF-tu6Lxrg",
+      "operationName": "PinTimeline",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "VIHsNu89pK-kW35JpHq7Xw",
+      "operationName": "PinTweet",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "-CUKb8NZwh7_vdlnWMuMcg",
+      "operationName": "ProfileFilter",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "5kUWP8C1hcd6omvg6HXXTQ",
+      "operationName": "ProfileUserPhoneState",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "IjQ-egg0uPkY11NyPMfRMQ",
+      "operationName": "PutClientEducationFlag",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "QpNfg0kpPRfjROQ_9eOLXA",
+      "operationName": "RemoveFollower",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "u9NzT5-wCdzObx7_tGd5bg",
+      "operationName": "RequestToJoinCommunity",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "Yw6L66Pw54NHKuq4Dp7b4Q",
+      "operationName": "SearchTimeline",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "5h0kNbk3ii97rmfY6CdgAA",
+      "operationName": "SharingAudiospacesListeningDataWithFollowersUpdate",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "7PhXUqd77jIDGU1G9e7sug",
+      "operationName": "SimilarPosts",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "8jtMQ9UaiKtqaHedZ5zXtQ",
+      "operationName": "SuperFollowers",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "fZ5uZVeledO5SAseKnmTUg",
+      "operationName": "SupportedLanguages",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "vfVbgvTPTQ-dF_PQ5lD1WQ",
+      "operationName": "timelinesFeedback",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "BRFb6Xi9LVP0bYfPIBw1Uw",
+      "operationName": "TrendHistory",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "0ve6isn1HInt-O3CK4o-aw",
+      "operationName": "TrendRelevantUsers",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "jnqYBWDQ0FFEKBe1TS2Tvg",
+      "operationName": "TVHomeMixer",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "oCon7R-cgWRFy6EfZjaKfg",
+      "operationName": "TweetDetail",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "2Acdg-VztGlHX7MjX67Ysw",
+      "operationName": "TweetResultByRestId",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "BwuN_YTc9eeI25mH_qjqPw",
+      "operationName": "TweetResultsByRestIds",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "yqhcbdyy59k-FCwOysvvGQ",
+      "operationName": "UndoDownvoteTweet",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "ZYKSe-w7KEslx3JhSIk5LA",
+      "operationName": "UnfavoriteTweet",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "xVW9j3OqoBRY9d6_2OONEg",
+      "operationName": "UnmentionUserFromConversation",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "pVSyu6PA57TLvIE4nN2tsA",
+      "operationName": "UnmoderateTweet",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "pMZrHRNsmEkXgbn3tOyr7Q",
+      "operationName": "UnmuteList",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "fgh47BrqwIj91JnA2Kpxuw",
+      "operationName": "UnpinTimeline",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "BhKei844ypCyLYCg0nwigw",
+      "operationName": "UnpinTweet",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "aQKrduk_DA46XfOQDkcEng",
+      "operationName": "updateAltTextPromptPreference",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "zotgs3U-FVUY87mygvnsNQ",
+      "operationName": "UpdateList",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "xp03NH_h8oZ4ob6FFNil0A",
+      "operationName": "UpdatePinnedTimelines",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "Sg3BvwapuCMIjLJ7LGPhMA",
+      "operationName": "Upsells",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "fCzDPRDnGFlnYKD9fHsCKQ",
+      "operationName": "UrtFixtures",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "gk3ZccSdEdk0YzrZjZ4QgQ",
+      "operationName": "UserArticlesTweets",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "yo94Xvfou83DPCeVmjAnhw",
+      "operationName": "UserBusinessProfileTeamTimeline",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "VQfQ9wwYdk6j_u2O4vt64Q",
+      "operationName": "UserByRestId",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "IGgvgiOx4QZndDHuD3x9TQ",
+      "operationName": "UserByScreenName",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "9ZHdtsqVRkYro5gkDEqrOg",
+      "operationName": "UserCreatorSubscribers",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "-9O4xZ8ykY_Hf6kyHJX30A",
+      "operationName": "UserCreatorSubscriptions",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "acwIZetKoEZPfIAhjXYpuA",
+      "operationName": "UserHighlightsTweets",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "9EovraBTXJYGSEQXZqlLmQ",
+      "operationName": "UserMedia",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "xFxU-O8hEYe74ovNVU74jA",
+      "operationName": "UserPreferences",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "GvXm-h7UrfIrXKuRnbfKhg",
+      "operationName": "UserPromotableTweets",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "fMxQ5XvNCEZXD2nFlj42dQ",
+      "operationName": "UserPromotedTweets",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "a74irv24XPYDjy5LSNQUXg",
+      "operationName": "UsersByRestIds",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "BDxiyyoNcdR0I_mJcryMLA",
+      "operationName": "UsersByScreenNames",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "vJ-XatpmQSG8bDch8-t9Jw",
+      "operationName": "UserSessionsList",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "5ewtbagF3H_f5FPQBikBYA",
+      "operationName": "UserSuperFollowTweets",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "x3JZoNX9ubSzoCIHoYo2NA",
+      "operationName": "UsersVerifiedAvatars",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "36rb3Xj3iJ64Q-9wKDjCcQ",
+      "operationName": "UserTweets",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "D5eKzDa5ZoJuC1TCeAXbWA",
+      "operationName": "UserTweetsAndReplies",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "_8ClT24oZ8tpylf_OSuNdg",
+      "operationName": "Viewer",
+      "operationType": "query",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    },
+    {
+      "queryId": "H03etWvZGz41YASxAU2YPg",
+      "operationName": "WriteDataSaverPreferences",
+      "operationType": "mutation",
+      "sources": [
+        "main.6c0fb38a.js"
+      ]
+    }
+  ]
+}

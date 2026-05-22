@@ -1,0 +1,400 @@
+{
+  "total": 131,
+  "features": {
+    "all_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "articles_preview_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "articles_rest_api_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "blue_business_multi_affiliates_ui_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "blue_longer_video_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "branded_features_is_branded_likes_on_tweet_content_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "c9s_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "c9s_tweet_anatomy_moderator_badge_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "co_timeline_topic_filter_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "communities_non_member_reply_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "content_disclosure_ai_generated_indicator_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "content_disclosure_indicator_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "creator_subscriptions_tweet_preview_api_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "dash_region_specific_de_and_tr_media_transparency_items_enabled": [
+      "bundle.LoggedOutHome.b7b6169a.js"
+    ],
+    "dash_region_specific_de_media_transparency_items_enabled": [
+      "bundle.LoggedOutHome.b7b6169a.js"
+    ],
+    "disallowed_reply_controls_callout_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "dm_conversations_nsfw_media_filter_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "dont_mention_me_view_api_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "freedom_of_speech_not_reach_fetch_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "graphql_is_translatable_rweb_tweet_is_translatable_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "gryphon_underground_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "hidden_profile_subscriptions_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "highlights_tweets_tab_ui_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "is_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "longform_notetweets_composition_without_claims_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "longform_notetweets_consumption_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "longform_notetweets_inline_media_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "longform_notetweets_rich_composition_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "longform_notetweets_rich_text_read_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "longform_notetweets_tweet_storm_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "optimized_sru_parameters_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "post_ctas_fetch_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "premium_content_api_read_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "profile_label_improvements_pcf_label_in_post_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "profile_sort_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_alt_text_nudges_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_api_transition_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_birdwatch_consumption_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_birdwatch_pivots_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_castle_client_event_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_castle_sdk_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_composer_configurable_video_player_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_cookie_compliance_banner_enabled": [
+      "bundle.LoggedOutHome.b7b6169a.js"
+    ],
+    "responsive_web_cookie_compliance_banner_update_enabled": [
+      "bundle.LoggedOutHome.b7b6169a.js"
+    ],
+    "responsive_web_cookie_compliance_gingersnap_enabled": [
+      "bundle.LoggedOutHome.b7b6169a.js",
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_cookie_consent_signal_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_edit_tweet_api_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_edit_tweet_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_edit_tweet_perspective_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_enhance_cards_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_graphql_skip_user_profile_image_extensions_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_graphql_timeline_navigation_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_grok_analyze_button_fetch_trends_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_grok_analyze_post_followups_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_grok_annotations_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_grok_article_summary_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_grok_bio_auto_translation_in_followers_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_grok_bio_auto_translation_in_search_is_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_grok_bio_auto_translation_is_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_grok_community_note_auto_translation_is_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_grok_image_annotation_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_grok_imagine_annotation_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_grok_link_edit_image_to_grok_com_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_grok_share_attachment_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_grok_tweet_media_detail_edit_image_button_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_grok_tweet_media_edit_image_button_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_hevc_upload_preview_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_locale_context_direction_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_logged_out_ios_redesign_enabled": [
+      "bundle.LoggedOutHome.b7b6169a.js"
+    ],
+    "responsive_web_logged_out_ios_webview_redirect_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_logged_out_redesign_enabled": [
+      "bundle.LoggedOutHome.b7b6169a.js"
+    ],
+    "responsive_web_media_upload_appendmulti_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_media_upload_md5_hashing_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_media_upload_metrics_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_ocf_reportflow_appeals_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_ocf_reportflow_dms_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_ocf_reportflow_lists_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_ocf_reportflow_profiles_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_ocf_reportflow_spaces_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_ocf_reportflow_suspension_appeals_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_ocf_reportflow_tweets_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_ocf_reportflow_user_label_appeals_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_placeholder_siwg_button_enabled": [
+      "bundle.LoggedOutHome.b7b6169a.js"
+    ],
+    "responsive_web_profile_redirect_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_redux_use_fragment_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_repeat_profile_visits_notifications_device_follow_only_version_enabled": [
+      "bundle.LoggedOutHome.b7b6169a.js"
+    ],
+    "responsive_web_repeat_profile_visits_notifications_enabled": [
+      "bundle.LoggedOutHome.b7b6169a.js"
+    ],
+    "responsive_web_send_cookies_metadata_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_spud_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_sso_redirect_enabled": [
+      "bundle.LoggedOutHome.b7b6169a.js"
+    ],
+    "responsive_web_timeline_relay_lists_management_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_timezone_header_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_twitter_article_notes_tab_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_twitter_article_plain_text_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_twitter_article_seed_tweet_detail_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_twitter_article_tweet_consumption_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "responsive_web_x_translation_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "rweb_cashtags_composer_attachment_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "rweb_cashtags_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "rweb_client_transaction_id_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "rweb_conf_only_enabled": [
+      "bundle.LoggedOutHome.b7b6169a.js",
+      "main.6c0fb38a.js"
+    ],
+    "rweb_conversational_replies_downvote_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "rweb_debugger_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "rweb_home_jot_migrate_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "rweb_home_ranked_following_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "rweb_home_uas_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "rweb_media_carousel_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "rweb_media_multi_requests_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "rweb_modal_animation_enabled": [
+      "bundle.LoggedOutRoutes.9b90947a.js"
+    ],
+    "rweb_search_media_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "rweb_session_binding_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "rweb_tipjar_consumption_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "rweb_video_screen_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "rweb_xchat_delegate_accounts_enabled": [
+      "bundle.LoggedOutHome.b7b6169a.js"
+    ],
+    "rweb_xchat_messages_sidebar_enabled": [
+      "bundle.LoggedOutHome.b7b6169a.js"
+    ],
+    "subscriptions_blue_verified_edit_profile_error_message_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "subscriptions_upsells_api_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "subscriptions_verification_info_is_identity_verified_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "subscriptions_verification_info_verified_since_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "super_follow_exclusive_tweet_creation_api_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "toxic_reply_filter_inline_callout_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "tweet_limited_actions_config_dpa_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "tweet_limited_actions_config_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "tweet_with_visibility_results_all_gql_limited_actions_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "tweet_with_visibility_results_partial_gql_limited_actions_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "tweet_with_visibility_results_prefer_gql_limited_actions_policy_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "verified_phone_label_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "video_attribution_display_over_video_cards_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "view_counts_everywhere_api_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "view_counts_public_visibility_enabled": [
+      "main.6c0fb38a.js"
+    ],
+    "voice_consumption_enabled": [
+      "main.6c0fb38a.js"
+    ]
+  }
+}
