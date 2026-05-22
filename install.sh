@@ -59,6 +59,10 @@ cat > "$WRAPPER_PATH" <<EOF
 #!/usr/bin/env bash
 # xa — wrapper installé par xcli/install.sh
 # Source du projet : $REPO_DIR
+[ -d "$REPO_DIR" ] || {
+    echo "xa: repo introuvable à $REPO_DIR — re-clone et relance install.sh" >&2
+    exit 1
+}
 exec uv run --project "$REPO_DIR" --quiet xa "\$@"
 EOF
 chmod +x "$WRAPPER_PATH"

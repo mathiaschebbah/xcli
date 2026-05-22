@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "pineapple-search"
+name = "xa"
 version = "1.0.0"
 description = "CLI agent-native pour l'API privée web de X.com (Twitter), avec contournement du x-client-transaction-id."
 readme = "README.md"
@@ -26,3 +26,4 @@ xa = "xa.cli:cli"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/xa"]
+artifacts = ["src/xa/data/*.json"]

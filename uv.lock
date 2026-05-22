@@ -159,25 +159,6 @@ wheels = [
 ]
 
 [[package]]
-name = "pineapple-search"
-version = "1.0.0"
-source = { editable = "." }
-dependencies = [
-    { name = "browser-cookie3" },
-    { name = "bs4" },
-    { name = "requests" },
-    { name = "x-client-transaction-id" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "browser-cookie3", specifier = ">=0.20.1" },
-    { name = "bs4", specifier = ">=0.0.2" },
-    { name = "requests", specifier = ">=2.34.2" },
-    { name = "x-client-transaction-id", specifier = ">=0.0.1" },
-]
-
-[[package]]
 name = "pycryptodomex"
 version = "3.23.0"
 source = { registry = "https://pypi.org/simple" }
@@ -296,6 +277,25 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/aa/de/f25d77c9a815a655d0b8fdce0ada0fa689068a4ba9127d4b7808427def90/x_client_transaction_id-0.0.1.tar.gz", hash = "sha256:170807f203bf18f8e82e6f0e4f2addc5a7bc2a5e5e2d4531262835a820353859", size = 1488, upload-time = "2025-04-30T09:59:48.853Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ea/ce/014153cd342548e955ce5f6af1d27cb93fbf3bca0f93d57d51f9cd0e4801/x_client_transaction_id-0.0.1-py3-none-any.whl", hash = "sha256:a2f5b1d9f093b60f85bf28790750a5a310249fdde4e061a03e30d6737a287000", size = 1556, upload-time = "2025-04-30T09:59:47.471Z" },
+]
+
+[[package]]
+name = "xa"
+version = "1.0.0"
+source = { editable = "." }
+dependencies = [
+    { name = "browser-cookie3" },
+    { name = "bs4" },
+    { name = "requests" },
+    { name = "x-client-transaction-id" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "browser-cookie3", specifier = ">=0.20.1" },
+    { name = "bs4", specifier = ">=0.0.2" },
+    { name = "requests", specifier = ">=2.34.2" },
+    { name = "x-client-transaction-id", specifier = ">=0.0.1" },
 ]
 
 [[package]]

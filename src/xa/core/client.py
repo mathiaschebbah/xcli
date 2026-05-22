@@ -125,12 +125,15 @@ class XClient:
                     save_features(features)
                 return data
 
-            if r.status_code in (429, 401, 403, 500, 502, 503, 504):
-                if r.status_code in (401, 403):
-                    sys.stderr.write(
-                        f"[!] {r.status_code} sur {op_name} — cookies "
-                        "probablement expirés. Refais `xa auth-init`.\n"
-                    )
+            if r.status_code in (401, 403):
+                # Auth cassée — pas de retry, l'utilisateur doit relogger.
+                raise XaError(
+                    "session_invalid",
+                    f"HTTP {r.status_code} sur {op_name}: cookies expirés ou invalides.",
+                    hint="reconnecte-toi sur https://x.com puis relance `xa auth-init`",
+                )
+
+            if r.status_code in (429, 500, 502, 503, 504):
                 wait = 2 ** attempt + random.uniform(0, 2)
                 sys.stderr.write(
                     f"  retry {op_name} status={r.status_code} sleep={wait:.1f}s\n"

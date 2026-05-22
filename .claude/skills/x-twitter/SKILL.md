@@ -176,7 +176,8 @@ the account will be flagged or suspended.
 | `user_not_found` | typo or banned/protected | check the screen_name |
 | `confirmation_required` | tried a write without `--yes` | re-run with `--yes` |
 | `unknown_op` | op not in catalog | `xa harvest-ops` to refresh, or `xa ops --filter <name>` |
-| `http_error: HTTP 404` | x-client-transaction-id failed | check `x-client-transaction-id` lib installed |
+| `http_error: HTTP 404` | stale queryId (X updated its API) | `xa harvest-ops` to regenerate the catalog |
+| `http_error: HTTP 403` | `x-client-transaction-id` algo broken or cookies bad | check `x-client-transaction-id` lib installed; if OK, re-init auth |
 
 ### When ops fail repeatedly (X updated its client)
 ```bash

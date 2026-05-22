@@ -63,6 +63,7 @@ def cmd_post(args) -> dict:
 @register("reply", configure=_configure_reply, is_write=True)
 def cmd_reply(args) -> dict:
     """Répond à un tweet. Requiert --yes."""
+    require_yes(args, "reply")
     args.reply_to = args.tweet_id
     return cmd_post(args)
 

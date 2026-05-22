@@ -6,6 +6,11 @@ ops `{queryId, operationName, operationType}`, et écrit le résultat dans
 
 À relancer quand X push une mise à jour et qu'on voit beaucoup de 404 ou
 `unknown_op`. Le fichier généré écrase l'ancien.
+
+Note: ne touche PAS à `~/.config/xa/features.json` (qui est un dict
+`{flag: bool}` géré par auto-discovery dans `core/client.py`). Le
+`x_features_inventory.json` écrit ici est un inventaire informatif des
+flags vus dans les bundles, distinct des flags effectivement utilisés.
 """
 
 from __future__ import annotations
@@ -106,7 +111,7 @@ def cmd_harvest_ops(args) -> dict:
     out_dir.mkdir(parents=True, exist_ok=True)
 
     ops_path = out_dir / "x_ops.json"
-    feats_path = out_dir / "x_features.json"
+    feats_path = out_dir / "x_features_inventory.json"
     ops_path.write_text(json.dumps({
         "total": len(ops_list),
         "by_type_count": by_type,

@@ -93,6 +93,14 @@ def cmd_cookies(args) -> dict:
         return ok([], errors=errors, count=0,
                   message=f"Aucun cookie pour {args.domain}")
 
+    # Formats qui exposent forcément les valeurs : exige --reveal
+    if args.format in ("header", "netscape") and not args.reveal:
+        raise XaError(
+            "reveal_required",
+            f"--format {args.format} expose les valeurs en clair, --reveal est obligatoire.",
+            hint="ajoute --reveal si tu veux vraiment exporter les cookies",
+        )
+
     # Formats spéciaux
     if args.format == "header":
         # Garde la 1ère valeur par nom (header HTTP Cookie)
