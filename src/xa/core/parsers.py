@@ -20,6 +20,29 @@ def coalesce_user_field(user_node: dict, field: str):
     return core.get(field) or legacy.get(field)
 
 
+def _append_tweet_from_itemcontent(
+    out: list[dict],
+    seen: set[str],
+    item_content: dict,
+    *,
+    keep_tombstones: bool = False,
+) -> None:
+    """Extrait un tweet de `itemContent`, summarize, dedup, append.
+
+    Helper interne partagé par parse_tweet_entries (timelines, keep_tombstones=True)
+    et parse_thread_entries (TweetDetail, keep_tombstones=False).
+    """
+    tw = (item_content.get("tweet_results") or {}).get("result") or {}
+    summary = summarize_tweet(tw)
+    if summary["id"] is None:
+        if keep_tombstones:
+            out.append(summary)
+        return
+    if summary["id"] not in seen:
+        seen.add(summary["id"])
+        out.append(summary)
+
+
 def parse_tweet_entries(payload: dict) -> tuple[list[dict], str | None]:
     """Parse une réponse type SearchTimeline / UserTweets / HomeTimeline.
 
@@ -49,17 +72,11 @@ def parse_tweet_entries(payload: dict) -> tuple[list[dict], str | None]:
     seen_ids: set[str] = set()
 
     def _add_tweet(item_content: dict) -> None:
-        tw = (item_content.get("tweet_results") or {}).get("result") or {}
-        summary = summarize_tweet(tw)
-        tweet_id = summary["id"]
-        # Tweets sans id (tombstones, withholdings) sont gardés pour
-        # signaler leur présence ; dédup uniquement sur les ids non-null.
-        if tweet_id is None:
-            out.append(summary)
-            return
-        if tweet_id not in seen_ids:
-            seen_ids.add(tweet_id)
-            out.append(summary)
+        # Timelines : on garde les tombstones (id=None) pour signaler les
+        # tweets supprimés/withhelds, dédup uniquement sur ids non-null.
+        _append_tweet_from_itemcontent(
+            out, seen_ids, item_content, keep_tombstones=True,
+        )
 
     def _add_module_items(items: list) -> None:
         for it in items or []:
@@ -119,16 +136,6 @@ def parse_thread_entries(payload: dict) -> list[dict]:
     out: list[dict] = []
     seen: set[str] = set()
 
-    def _add_tweet(item_content: dict) -> None:
-        tw = (item_content.get("tweet_results") or {}).get("result") or {}
-        summary = summarize_tweet(tw)
-        if not summary["id"]:
-            return
-        if summary["id"] in seen:
-            return
-        seen.add(summary["id"])
-        out.append(summary)
-
     instructions = (
         payload.get("data", {})
         .get("threaded_conversation_with_injections_v2", {})
@@ -145,7 +152,11 @@ def parse_thread_entries(payload: dict) -> list[dict]:
             for it in items:
                 ic = ((it or {}).get("item") or {}).get("itemContent") or {}
                 if ic:
-                    _add_tweet(ic)
+                    # TweetDetail : on skip les tombstones (ils n'apportent
+                    # rien dans le contexte d'un fil de conversation focal).
+                    _append_tweet_from_itemcontent(
+                        out, seen, ic, keep_tombstones=False,
+                    )
     return out
 
 
