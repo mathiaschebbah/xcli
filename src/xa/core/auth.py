@@ -1,8 +1,9 @@
 """Extraction et persistance des cookies de session X.
 
 Scanne tous les profils Chromium installés (Chrome, Brave, Edge, Chromium)
-sur macOS, et retourne le premier qui contient les cookies `auth_token` +
-`ct0`. Sauvegarde dans `~/.config/xa/cookies.json` en mode 0600.
+sur macOS / Windows / Linux, et retourne le premier qui contient les cookies
+`auth_token` + `ct0`. Sauvegarde dans la config dir utilisateur (mode 0600
+sur Unix ; sur Windows le mode est ignoré par l'OS).
 """
 
 from __future__ import annotations
@@ -21,23 +22,22 @@ from .settings import BROWSERS, CFG_DIR, COOKIE_FILE
 def discover_browser_profiles() -> list[tuple[str, str, Path]]:
     """Retourne la liste `(browser, profile, path Cookies)` des profils trouvés.
 
-    macOS seulement pour l'instant. Sur d'autres OS, retourne [].
+    Cross-platform : utilise les roots `User Data` définis dans `settings.BROWSERS`
+    pour l'OS courant. Filtre sur les profils standards (`Default`, `Profile N`),
+    en ignorant `Guest Profile` / `System Profile` qui ne contiennent pas de session.
     """
-    home = Path.home() / "Library" / "Application Support"
-    if not home.exists():
-        return []
     found: list[tuple[str, str, Path]] = []
-    for browser, (subpath, _fn) in BROWSERS.items():
-        root = home / subpath
+    for browser, (root, _fn) in BROWSERS.items():
         if not root.exists():
             continue
         for profile_dir in sorted(root.iterdir()):
             name = profile_dir.name
             if name != "Default" and not name.startswith("Profile "):
                 continue
-            ck = profile_dir / "Cookies"
+            # Chrome moderne : Cookies sous Network/. Anciennes versions : à la racine.
+            ck = profile_dir / "Network" / "Cookies"
             if not ck.exists():
-                ck = profile_dir / "Network" / "Cookies"  # Chrome moderne
+                ck = profile_dir / "Cookies"
             if ck.exists():
                 found.append((browser, name, ck))
     return found
@@ -87,23 +87,39 @@ def load_x_cookies(
     )
     if errors:
         msg += "\nErreurs: " + " | ".join(errors[:5])
-    raise XaError("no_cookies", msg, hint="login sur x.com via Chrome")
+    # Sur Windows, Chrome v127+ chiffre les cookies avec App-Bound Encryption
+    # (browser_cookie3 lève RequiresAdminError). On l'indique explicitement.
+    hint = "login sur x.com via Chrome (ou Brave/Edge/Chromium)"
+    if sys.platform == "win32" and any("RequiresAdmin" in e for e in errors):
+        hint = (
+            "Chromium v127+ chiffre les cookies avec App-Bound Encryption "
+            "sur Windows. Relance dans un PowerShell ouvert 'En tant "
+            "qu'administrateur', OU ferme entièrement le navigateur avant "
+            "de réessayer."
+        )
+    raise XaError("no_cookies", msg, hint=hint)
 
 
 def save_cookies(cookies: dict[str, str]) -> None:
-    """Persiste les cookies dans `~/.config/xa/cookies.json` (mode 0600).
+    """Persiste les cookies dans la config dir (mode 0600 sur Unix).
 
-    Ouvre le fichier avec 0o600 dès la création pour éviter une fenêtre
-    où il serait lisible par d'autres utilisateurs.
+    Sur Unix : ouvre le fichier avec 0o600 dès la création pour éviter une
+    fenêtre où il serait lisible par d'autres utilisateurs.
+    Sur Windows : le mode POSIX est ignoré par l'OS ; la protection vient
+    des ACL utilisateur par défaut sur `%APPDATA%`.
     """
     CFG_DIR.mkdir(parents=True, exist_ok=True)
-    fd = os.open(
-        COOKIE_FILE,
-        os.O_WRONLY | os.O_CREAT | os.O_TRUNC,
-        0o600,
-    )
-    with os.fdopen(fd, "w") as f:
-        f.write(json.dumps(cookies, indent=2))
+    payload = json.dumps(cookies, indent=2)
+    if sys.platform == "win32":
+        COOKIE_FILE.write_text(payload)
+    else:
+        fd = os.open(
+            COOKIE_FILE,
+            os.O_WRONLY | os.O_CREAT | os.O_TRUNC,
+            0o600,
+        )
+        with os.fdopen(fd, "w") as f:
+            f.write(payload)
 
 
 def twid_to_uid(twid: str) -> str | None:
