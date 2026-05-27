@@ -56,7 +56,24 @@ def _dispatch(args) -> dict:
     return cmd.fn(args)
 
 
+def _force_utf8_stdio() -> None:
+    """Force UTF-8 sur stdout/stderr.
+
+    Sur Windows, le code page console par défaut (cp1252) corrompt les
+    caractères accentués du JSON. `reconfigure` est dispo depuis Python 3.7
+    et no-op sur les flux déjà configurés.
+    """
+    for stream in (sys.stdout, sys.stderr):
+        reconfig = getattr(stream, "reconfigure", None)
+        if reconfig is not None:
+            try:
+                reconfig(encoding="utf-8")
+            except (ValueError, OSError):
+                pass
+
+
 def main(argv: list[str] | None = None) -> int:
+    _force_utf8_stdio()
     if argv is None:
         argv = sys.argv[1:]
     # Permet --human n'importe où dans argv (argparse exige avant la sous-cmd

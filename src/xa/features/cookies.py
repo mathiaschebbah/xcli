@@ -10,8 +10,8 @@ from __future__ import annotations
 
 import re
 import time
-from pathlib import Path
 
+from ..core.auth import discover_browser_profiles
 from ..core.errors import XaError
 from ..core.output import ok
 from ..core.registry import register
@@ -21,26 +21,6 @@ SENSITIVE_NAME_RE = re.compile(
     r"(session|token|auth|secret|csrf|bearer|sid|access|refresh|claim)",
     re.IGNORECASE,
 )
-
-
-def _discover_sources() -> list[tuple[str, str, Path]]:
-    """Liste tous les Cookies files des navigateurs Chromium (macOS)."""
-    home = Path.home() / "Library" / "Application Support"
-    found = []
-    for browser, (subpath, _fn) in BROWSERS.items():
-        root = home / subpath
-        if not root.exists():
-            continue
-        for profile_dir in sorted(root.iterdir()):
-            name = profile_dir.name
-            if name != "Default" and not name.startswith("Profile "):
-                continue
-            ck = profile_dir / "Cookies"
-            if not ck.exists():
-                ck = profile_dir / "Network" / "Cookies"
-            if ck.exists():
-                found.append((browser, name, ck))
-    return found
 
 
 def _args_cookies(sp):
@@ -62,7 +42,7 @@ def cmd_cookies(args) -> dict:
     Utilitaire de debug : sert à vérifier l'état d'auth ou à exporter les
     cookies pour un autre outil (curl, wget, yt-dlp...).
     """
-    sources = _discover_sources()
+    sources = discover_browser_profiles()
     if args.source:
         sources = [s for s in sources if f"{s[0]}/{s[1]}" == args.source]
     if not sources:

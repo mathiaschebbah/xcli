@@ -15,17 +15,20 @@ the user.
 ### Prerequisites (check, install if missing)
 
 ```bash
-# 1. macOS (currently only supported OS for cookie extraction)
-[ "$(uname)" = "Darwin" ] || { echo "ERROR: macOS required"; exit 1; }
+# 1. Supported OS: macOS, Linux, or Windows.
+#    (On Windows, use the install.ps1 PowerShell script — see below.)
 
 # 2. uv (Python package manager) — install via this command if absent:
+#    macOS / Linux :
 command -v uv >/dev/null || curl -LsSf https://astral.sh/uv/install.sh | sh
+#    Windows (PowerShell) :
+#    irm https://astral.sh/uv/install.ps1 | iex
 
 # 3. Chrome (or Brave/Edge/Chromium) installed and logged in on https://x.com
 #    Cannot be auto-checked. Ask the user to confirm before proceeding.
 ```
 
-### Install
+### Install (macOS / Linux)
 
 ```bash
 # Replace <REPO_URL> with the repo URL the user gave you.
@@ -43,6 +46,31 @@ cd xcli
 
 If `~/.local/bin` is not in `PATH`, the script prints the line to add to
 the user's shell rc. You must show that line to the user.
+
+### Install (Windows, PowerShell)
+
+```powershell
+git clone <REPO_URL> xcli
+cd xcli
+.\install.ps1
+```
+
+`install.ps1` performs:
+1. `uv sync --native-tls` (the `--native-tls` flag uses the Windows
+   certificate store — necessary behind corporate proxies that inject
+   a custom root cert)
+2. Writes `xa.cmd` to `%LOCALAPPDATA%\xa\bin` (add to `Path` if missing —
+   the script tells you the exact `setx` command)
+3. Copies the Claude Code skill to `%USERPROFILE%\.claude\skills\x-twitter\SKILL.md`
+
+Cookies live in `%APPDATA%\xa\cookies.json` (vs `~/.config/xa/cookies.json`
+on macOS / Linux).
+
+**Note about Chromium v127+ on Windows.** Chrome/Edge/Brave encrypt the
+cookie DB with App-Bound Encryption since v127. `browser_cookie3` requires
+either (a) an elevated PowerShell ("Run as administrator"), or (b) the
+browser to be fully closed before `xa auth-init` is called. If you see
+`RequiresAdminError`, take one of those two paths.
 
 ### Verify install (run these and check `ok: true` in the JSON output)
 
@@ -66,8 +94,13 @@ to open Chrome, log in to https://x.com, then re-run `xa auth-init`.
 ### Uninstall
 
 ```bash
-# depuis la racine du repo cloné :
+# macOS / Linux, depuis la racine du repo cloné :
 ./install.sh --uninstall
+```
+
+```powershell
+# Windows, depuis la racine du repo cloné :
+.\install.ps1 -Uninstall
 ```
 
 ---

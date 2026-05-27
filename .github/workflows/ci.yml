@@ -8,7 +8,11 @@ on:
 
 jobs:
   smoke-test:
-    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
 
@@ -24,6 +28,7 @@ jobs:
         run: uv sync
 
       - name: Smoke test — import & CLI loads
+        shell: bash
         run: |
           uv run python -c "import xa; print('xa', xa.__version__)"
           uv run xa --help > /dev/null
@@ -32,9 +37,10 @@ jobs:
           uv run xa help post > /dev/null         # write command schema
           uv run xa help raw > /dev/null          # raw escape hatch
           uv run xa ops --filter Search > /dev/null
-          uv run xa cookies x.com > /dev/null || true   # OK si pas de Chrome en CI
+          uv run xa cookies x.com > /dev/null || true   # OK si pas de browser en CI
 
       - name: Smoke test — write lock works without --yes
+        shell: bash
         run: |
           out=$(uv run xa post "ci-test" 2>&1) || true
           echo "$out" | grep -q "confirmation_required" || {
@@ -43,5 +49,6 @@ jobs:
           }
 
       - name: Check no syntax errors
+        shell: bash
         run: |
           uv run python -m compileall -q src/
