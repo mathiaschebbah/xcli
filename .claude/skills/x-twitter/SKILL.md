@@ -83,7 +83,8 @@ xa replies SCREEN_NAME --limit 50
 xa media SCREEN_NAME --limit 30
 xa likes SCREEN_NAME --limit 50
 xa bookmarks --limit 50                  # tes signets (compte loggé)
-xa bookmarks --query "TERM" --limit 50   # filtre plein-texte dans tes signets
+xa bookmarks --query "TERM"              # recherche CÔTÉ X (rapide, mots exacts)
+xa bookmarks --grep "TERM1 TERM2"        # recherche LOCALE exhaustive (corpus complet)
 xa following SCREEN_NAME --limit 200
 xa followers SCREEN_NAME --limit 200
 xa trends
@@ -150,13 +151,39 @@ Extract the tweet_id (last numeric segment of `https://x.com/.../status/<id>`).
 xa thread <id> --fields id,author,text
 ```
 
-### "Find that thing I bookmarked about X"
+### "Find that thing I bookmarked about X" (efficient + exhaustive)
+
+Two complementary search methods. For best recall, use BOTH, in this order:
+
+**1. Server search — fast, but matches exact words only.** Run it as a BATCH
+of synonyms/variants, not a single term: the server won't expand "design" to
+"motion"/"animation", so one word silently misses tweets. Fire several queries
+(cheap) and union the results.
 ```bash
-xa bookmarks --query "X" --limit 30 --fields id,author,text,url   # filtre côté X
-xa bookmarks --limit 50 --fields id,author,text                   # tout, du plus récent
+for q in design vocabulary lexicon glossary terminology jargon shorthand; do
+  xa bookmarks --query "$q" --limit 30 --fields id,author,text,url
+done | jq -s 'add // [] | unique_by(.id)'   # union + dedupe
 ```
-`--query` mappe sur `BookmarkSearchTimeline` (full-text), sans `--query` sur
-`Bookmarks` (timeline complet). Pagination via `next_cursor` comme les autres.
+
+**2. Local grep — exhaustive.** Paginates the WHOLE bookmark corpus once
+(cached ~10 min), then filters locally. Space-separated terms are OR by default
+(maximizes recall), so throw every synonym you can think of in one call:
+```bash
+xa bookmarks --grep "vocabulary vocabulaire lexicon glossary dictionary terminology shorthand jargon" \
+  --fields author,text,url
+```
+- First call pages everything (slow, ~1s/100 bookmarks, rate-limited); later
+  calls hit the cache and are instant. `--refresh` forces a re-page.
+- `--grep-all` requires ALL terms (AND). `--regex` treats the pattern as a
+  regex. Grep searches `text` + `author`.
+- `--query` + `--grep` together: server-search first, then grep narrows the
+  result locally.
+- Output adds `corpus_size`, `corpus_complete` (false = capped by `--max-pages`,
+  not the real end), `total_matches`, `from_cache`.
+
+Rule of thumb: vague memory of the topic → `--grep` with a fat OR list. Know an
+exact word/handle → `--query` (a batch of them). When it matters, do both and
+union.
 
 ### Pagination loop
 ```bash

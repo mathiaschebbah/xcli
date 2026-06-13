@@ -21,6 +21,10 @@ CFG_DIR = (
 COOKIE_FILE = CFG_DIR / "cookies.json"
 FEATURES_FILE = CFG_DIR / "features.json"
 
+# Cache local du corpus de signets (pour la recherche locale `--grep`).
+BOOKMARKS_CACHE_FILE = CFG_DIR / "bookmarks-cache.json"
+BOOKMARKS_CACHE_TTL = 600  # secondes ; au-delà on repagine (sauf --refresh)
+
 # Pagination defaults
 DEFAULT_LIMIT = 50
 MAX_LIMIT = 1000

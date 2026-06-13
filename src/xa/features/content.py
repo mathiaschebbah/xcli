@@ -1,7 +1,10 @@
-"""Contenu : `xa tweets/replies/media/likes/search/tweet/thread`."""
+"""Contenu : `xa tweets/replies/media/likes/search/bookmarks/tweet/thread`."""
 
 from __future__ import annotations
 
+import time
+
+from ..core import bookmarks_local as bm
 from ..core.output import ok, select_fields
 from ..core.pagination import paginate_capped
 from ..core.parsers import (
@@ -11,7 +14,7 @@ from ..core.parsers import (
     summarize_tweet,
 )
 from ..core.registry import register
-from ..core.settings import DEFAULT_LIMIT
+from ..core.settings import DEFAULT_LIMIT, MAX_LIMIT
 from ._common import (
     args_paginated_user,
     args_tweet_id_with_fields,
@@ -51,7 +54,35 @@ def _args_search(sp):
 def _args_bookmarks(sp):
     sp.add_argument(
         "--query",
-        help="filtre plein-texte côté X (sinon: tous les signets, du plus récent)",
+        help="recherche plein-texte CÔTÉ X (rapide, mais match de mots exacts ; "
+             "rate les synonymes)",
+    )
+    sp.add_argument(
+        "--grep",
+        help="recherche LOCALE sur le corpus complet (pagine tout puis filtre) : "
+             "termes séparés par espace = OR par défaut, insensible casse. "
+             "Plus exhaustif que --query. Combinable avec --query.",
+    )
+    sp.add_argument(
+        "--grep-all",
+        action="store_true",
+        help="avec --grep : exige TOUS les termes (AND) au lieu de OR",
+    )
+    sp.add_argument(
+        "--regex",
+        action="store_true",
+        help="avec --grep : traite le motif comme une regex (insensible casse)",
+    )
+    sp.add_argument(
+        "--refresh",
+        action="store_true",
+        help="avec --grep : ignore le cache local et repagine le corpus",
+    )
+    sp.add_argument(
+        "--max-pages",
+        type=int,
+        default=20,
+        help="avec --grep : plafond de pages de 100 à paginer (défaut 20 = 2000 signets)",
     )
     sp.add_argument("--limit", type=int, default=DEFAULT_LIMIT)
     sp.add_argument("--cursor")
@@ -118,9 +149,90 @@ def cmd_search(args) -> dict:
 
 # ─────────── signets ───────────
 
+def _fetch_bookmarks_corpus(client, max_pages: int) -> tuple[list[dict], bool]:
+    """Pagine TOUT le timeline des signets (jusqu'à max_pages * 100).
+
+    Utilisé par la recherche locale --grep. S'arrête quand X ne renvoie plus
+    de cursor ou plus de rows (fin réelle), ou au plafond max_pages.
+    Retourne (rows, complete) où `complete` indique qu'on a atteint la fin
+    réelle (et non le plafond) — pour ne pas faire passer un corpus tronqué
+    pour exhaustif.
+    """
+    rows: list[dict] = []
+    seen: set[str] = set()
+    cursor = None
+    complete = False
+    for _ in range(max(1, max_pages)):
+        page, next_c = paginate_capped(
+            client, "Bookmarks", {"includePromotedContent": False},
+            parse_tweet_entries, 100, cursor,
+        )
+        for r in page:
+            rid = r.get("id")
+            if rid and rid not in seen:
+                seen.add(rid)
+                rows.append(r)
+        if not next_c or not page:
+            complete = True
+            break
+        cursor = next_c
+    return rows, complete
+
+
+def _bookmarks_grep(args) -> dict:
+    """Recherche locale sur le corpus complet (avec cache disque)."""
+    cached = None if args.refresh else bm.load_cache()
+    from_cache = cached is not None
+    if cached is not None:
+        rows = cached["rows"]
+        complete = cached.get("complete", False)
+    else:
+        client = get_client()
+        fetched_at = time.time()
+        rows, complete = _fetch_bookmarks_corpus(client, args.max_pages)
+        # Ne pas remplacer un cache COMPLET et frais par un fetch tronqué
+        # (ex: --refresh --max-pages 2). On garde le plus exhaustif.
+        prev = bm.load_cache()
+        if (prev and prev.get("complete") and not complete
+                and len(prev["rows"]) > len(rows)):
+            rows, complete, from_cache = prev["rows"], True, True
+        else:
+            bm.save_cache(rows, fetched_at, complete)
+
+    # Affine éventuellement avec la recherche serveur d'abord (--query + --grep).
+    if args.query:
+        client = get_client()
+        srv, _ = paginate_capped(
+            client, "BookmarkSearchTimeline", {"rawQuery": args.query},
+            parse_tweet_entries, MAX_LIMIT, None,
+        )
+        srv_ids = {r.get("id") for r in srv}
+        rows = [r for r in rows if r.get("id") in srv_ids] or srv
+
+    matcher = bm.build_matcher(
+        args.grep, regex=args.regex, require_all=args.grep_all,
+    )
+    hits = bm.grep(rows, matcher)
+    capped = hits[: args.limit] if args.limit else hits
+    return ok(
+        select_fields(capped, args.fields),
+        count=len(capped), total_matches=len(hits),
+        corpus_size=len(rows), corpus_complete=complete,
+        from_cache=from_cache, grep=args.grep, query=args.query,
+    )
+
+
 @register("bookmarks", configure=_args_bookmarks)
 def cmd_bookmarks(args) -> dict:
-    """Tes signets (compte loggé). Avec --query: filtre plein-texte côté X."""
+    """Tes signets (compte loggé).
+
+    Trois modes (combinables) :
+    - défaut : timeline complète, du plus récent (op Bookmarks).
+    - --query X : recherche plein-texte CÔTÉ X (rapide, mots exacts).
+    - --grep X : recherche LOCALE exhaustive (pagine tout + filtre, regex/OR/AND).
+    """
+    if args.grep is not None:
+        return _bookmarks_grep(args)
     client = get_client()
     if args.query:
         # NB: BookmarkSearchTimeline n'accepte QUE rawQuery + count (+ cursor).
