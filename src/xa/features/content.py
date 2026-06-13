@@ -48,6 +48,16 @@ def _args_search(sp):
     sp.add_argument("--fields")
 
 
+def _args_bookmarks(sp):
+    sp.add_argument(
+        "--query",
+        help="filtre plein-texte côté X (sinon: tous les signets, du plus récent)",
+    )
+    sp.add_argument("--limit", type=int, default=DEFAULT_LIMIT)
+    sp.add_argument("--cursor")
+    sp.add_argument("--fields")
+
+
 # ─────────── commandes par user (paginées) ───────────
 
 @register("tweets", configure=args_paginated_user)
@@ -103,6 +113,29 @@ def cmd_search(args) -> dict:
         select_fields(rows, args.fields),
         next_cursor=next_c, count=len(rows),
         product=args.product, query=args.query,
+    )
+
+
+# ─────────── signets ───────────
+
+@register("bookmarks", configure=_args_bookmarks)
+def cmd_bookmarks(args) -> dict:
+    """Tes signets (compte loggé). Avec --query: filtre plein-texte côté X."""
+    client = get_client()
+    if args.query:
+        # NB: BookmarkSearchTimeline n'accepte QUE rawQuery + count (+ cursor).
+        # Lui passer querySource (comme SearchTimeline) fait planter X en 422
+        # "Internal server error" sur le path querySource.
+        rows, next_c = paginate_capped(client, "BookmarkSearchTimeline", {
+            "rawQuery": args.query,
+        }, parse_tweet_entries, args.limit, args.cursor)
+    else:
+        rows, next_c = paginate_capped(client, "Bookmarks", {
+            "includePromotedContent": False,
+        }, parse_tweet_entries, args.limit, args.cursor)
+    return ok(
+        select_fields(rows, args.fields),
+        next_cursor=next_c, count=len(rows), query=args.query,
     )
 
 

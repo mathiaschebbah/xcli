@@ -28,6 +28,23 @@ from ..core.settings import USER_AGENT
 
 BASE = "https://x.com"
 
+# Certaines ops vivent dans des chunks chargés à la demande (lazy), servis
+# seulement quand on visite la route correspondante EN SESSION CONNECTÉE. Le
+# HTML anonyme de la home que `harvest-ops` télécharge ne les référence pas, et
+# le mapping chunk -> hash n'est présent que dans des bundles eux aussi chargés
+# en session. On ne peut donc pas les redécouvrir depuis un harvest anonyme.
+# On les épingle ici (queryId extrait manuellement depuis le bundle live) et on
+# les réinjecte à chaque régénération. Le queryId d'une op est un hash de la
+# requête GraphQL, stable dans le temps : bien plus durable que le hash de build.
+PINNED_OPS = (
+    {
+        "queryId": "i8QZ1qqy36ffA3bxfTaf7w",
+        "operationName": "Bookmarks",
+        "operationType": "query",
+        "sources": ["shared~bundle.BookmarkFolders~bundle.Bookmarks (lazy chunk, pinned)"],
+    },
+)
+
 RE_OP = re.compile(
     r'queryId:"(?P<qid>[A-Za-z0-9_\-]+)",'
     r'operationName:"(?P<op>[A-Za-z0-9_]+)",'
@@ -86,6 +103,16 @@ def cmd_harvest_ops(args) -> dict:
                     "operationType": typ,
                     "sources": {Path(url).name},
                 }
+
+    # Réinjecte les ops épinglées (chunks lazy invisibles au harvest anonyme),
+    # sans écraser une éventuelle redécouverte par le scan ci-dessus.
+    for pin in PINNED_OPS:
+        found.setdefault(pin["queryId"], {
+            "queryId": pin["queryId"],
+            "operationName": pin["operationName"],
+            "operationType": pin["operationType"],
+            "sources": set(pin["sources"]),
+        })
     ops_list = []
     for op in sorted(found.values(), key=lambda x: x["operationName"].lower()):
         op["sources"] = sorted(op["sources"])

@@ -57,7 +57,7 @@ To get human-readable output, add `--human` anywhere in the command.
 xa --help                        # liste les commandes
 xa help                          # JSON schema de toutes les commandes
 xa help search                   # détail d'une commande
-xa ops --filter Tweet            # liste les ops GraphQL disponibles (158)
+xa ops --filter Tweet            # liste les ops GraphQL disponibles (159)
 ```
 
 ## Most useful commands
@@ -82,11 +82,13 @@ xa tweets SCREEN_NAME --limit 100
 xa replies SCREEN_NAME --limit 50
 xa media SCREEN_NAME --limit 30
 xa likes SCREEN_NAME --limit 50
+xa bookmarks --limit 50                  # tes signets (compte loggé)
+xa bookmarks --query "TERM" --limit 50   # filtre plein-texte dans tes signets
 xa following SCREEN_NAME --limit 200
 xa followers SCREEN_NAME --limit 200
 xa trends
 xa cookies <domain>              # debug auth (cookies for any domain)
-xa ops --filter <term>           # search the 158-op catalog
+xa ops --filter <term>           # search the 159-op catalog
 xa help [<cmd>]                  # machine-readable schema
 ```
 
@@ -121,7 +123,7 @@ xa follow SCREEN_NAME --yes / xa unfollow SCREEN_NAME --yes
 command. Writes are visible publicly and affect the user's account
 reputation. Never batch-like, batch-follow, or auto-DM.
 
-### Escape hatch (any of 158 GraphQL ops)
+### Escape hatch (any of 159 GraphQL ops)
 ```bash
 xa ops --filter SearchTimeline       # list ops in the catalog
 xa raw <OpName> --vars '{"k":"v"}'   # any read op from the catalog
@@ -147,6 +149,14 @@ Extract the tweet_id (last numeric segment of `https://x.com/.../status/<id>`).
 ```bash
 xa thread <id> --fields id,author,text
 ```
+
+### "Find that thing I bookmarked about X"
+```bash
+xa bookmarks --query "X" --limit 30 --fields id,author,text,url   # filtre côté X
+xa bookmarks --limit 50 --fields id,author,text                   # tout, du plus récent
+```
+`--query` mappe sur `BookmarkSearchTimeline` (full-text), sans `--query` sur
+`Bookmarks` (timeline complet). Pagination via `next_cursor` comme les autres.
 
 ### Pagination loop
 ```bash

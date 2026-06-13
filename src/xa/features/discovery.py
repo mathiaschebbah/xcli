@@ -29,7 +29,7 @@ def cmd_trends(args) -> dict:
 
 @register("ops", configure=_args_ops)
 def cmd_ops(args) -> dict:
-    """Liste les opérations GraphQL connues dans le catalogue (158)."""
+    """Liste les opérations GraphQL connues dans le catalogue."""
     ops = load_ops()
     items = list(ops.values())
     if args.filter:

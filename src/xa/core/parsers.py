@@ -67,6 +67,21 @@ def parse_tweet_entries(payload: dict) -> tuple[list[dict], str | None]:
             .get("timeline", {})
             .get("timeline", {})
         )
+    # Bookmarks : data.bookmark_timeline_v2.timeline
+    if not timeline:
+        timeline = (
+            payload.get("data", {})
+            .get("bookmark_timeline_v2", {})
+            .get("timeline", {})
+        )
+    # BookmarkSearchTimeline : data.search_by_raw_query.bookmarks_search_timeline.timeline
+    if not timeline:
+        timeline = (
+            payload.get("data", {})
+            .get("search_by_raw_query", {})
+            .get("bookmarks_search_timeline", {})
+            .get("timeline", {})
+        )
 
     instructions = timeline.get("instructions", []) if timeline else []
     seen_ids: set[str] = set()
