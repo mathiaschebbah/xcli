@@ -1,7 +1,7 @@
 {
-  "total": 158,
+  "total": 159,
   "by_type_count": {
-    "query": 94,
+    "query": 95,
     "mutation": 64,
     "subscription": 0
   },
@@ -124,11 +124,20 @@
       ]
     },
     {
-      "queryId": "OLqmUeJiIBcS9aLxg_qhOQ",
+      "queryId": "i8QZ1qqy36ffA3bxfTaf7w",
+      "operationName": "Bookmarks",
+      "operationType": "query",
+      "sources": [
+        "shared~bundle.BookmarkFolders~bundle.Bookmarks.js"
+      ]
+    },
+    {
+      "queryId": "vqy7GkKMR5TYk8_ysuhmfA",
       "operationName": "BookmarkSearchTimeline",
       "operationType": "query",
       "sources": [
-        "main.6c0fb38a.js"
+        "main.6c0fb38a.js",
+        "main.e5c51e2a.js"
       ]
     },
     {

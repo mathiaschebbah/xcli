@@ -128,7 +128,7 @@ Quick discovery:
 ```bash
 xa --help                 # human-readable subcommand list
 xa help                   # JSON schema of all commands
-xa ops --filter <term>    # search the 158-op GraphQL catalog
+xa ops --filter <term>    # search the 159-op GraphQL catalog
 ```
 
 ---
